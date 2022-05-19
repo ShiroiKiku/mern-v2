@@ -22,6 +22,9 @@ export const Navbar = () => {
                     <li>
                         <NavLink to='/links'>Ссылки</NavLink>
                     </li>
+                    <li>
+                        <NavLink to='/stream'>Стрим</NavLink>
+                    </li>
                     {auth.isAuthenticated === true && (
                         <>
                             <li>
