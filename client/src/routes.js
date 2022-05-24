@@ -19,9 +19,9 @@ export const useRoutes = (isAuthenticated) => {
                 <Route path='/detail/:id'>
                     <DetailPage />
                 </Route>
-                <Route path='/stream'>
+                {/* <Route path='/stream'>
                     <VideoPlayer />
-                </Route>
+                </Route> */}
                 <Redirect to='/links' />
             </Switch>
         );
@@ -39,9 +39,9 @@ export const useRoutes = (isAuthenticated) => {
             <Route path='/authpage' exact>
                 <AuthPage />
             </Route>
-            <Route path='/stream'>
+            {/* <Route path='/stream'>
                 <VideoPlayer />
-            </Route>
+            </Route> */}
             <Redirect to='/links' />
         </Switch>
     );
