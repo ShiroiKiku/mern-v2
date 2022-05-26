@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { NavbarDropList } from "./navbar/NavbarDropList";
+
 import M from "materialize-css";
 
 export const Navbar = () => {
@@ -23,8 +23,6 @@ export const Navbar = () => {
             alignment: "right",
         };
         M.Dropdown.init(dropdowns, options);
-
-        // eslint-disable-next-line
     }, []);
     const navbarLinks = [
         {
@@ -38,9 +36,19 @@ export const Navbar = () => {
             linkUrl: "stream",
             linkName: "Стрим",
             dropList: [
-                { _id: 1, dropUrl: "stream", dropLinkName: "Стрим" },
-                { _id: 2, dropUrl: "stream", dropLinkName: "Стрим" },
-                { _id: 3, dropUrl: "stream", dropLinkName: "Стрим" },
+                { _id: 1, dropUrl: "stream1", dropLinkName: "Стрим1" },
+                { _id: 2, dropUrl: "stream2", dropLinkName: "Стрим2" },
+                { _id: 3, dropUrl: "stream3", dropLinkName: "Стрим3" },
+            ],
+        },
+        {
+            _id: 3,
+            linkUrl: "stream4",
+            linkName: "Стрим",
+            dropList: [
+                { _id: 1, dropUrl: "stream1", dropLinkName: "Стрим5" },
+                { _id: 2, dropUrl: "stream2", dropLinkName: "Стрим6" },
+                { _id: 3, dropUrl: "stream3", dropLinkName: "Стрим7" },
             ],
         },
     ];
@@ -49,41 +57,70 @@ export const Navbar = () => {
         <div>
             <nav className='blue darken-2'>
                 <div className='nav-wrapper'>
-                    <a className='brand-logo'>SwimTechNL</a>
+                    <span className='brand-logo'>ГУК СОСБС</span>
                     <ul id='nav-mobile' className='right hide-on-med-and-down'>
-                        <li>
-                            <a>About</a>
-                        </li>
-                        <li>
-                            <a
-                                id='FirstDropDown'
-                                className='dropdown-trigger'
-                                href='#!'
-                                data-target='dropdown1'
-                                onClick={(e) =>
-                                    M.Dropdown.getInstance(e.target)
-                                }>
-                                Dropdown
-                                <i className='material-icons right'>
-                                    arrow_drop_down
-                                </i>
-                            </a>
-                            <ul id='dropdown1' className='dropdown-content'>
+                        {navbarLinks.map((navLink) => {
+                            if (navLink.dropList.length == 0) {
+                                return (
+                                    <li key={navLink._id} className='active'>
+                                        <NavLink to={`/${navLink.linkUrl}`}>
+                                            {navLink.linkName}123
+                                        </NavLink>
+                                    </li>
+                                );
+                            } else {
+                                const nl = navLink.dropList;
+                                return (
+                                    <li key={navLink._id}>
+                                        <a
+                                            id='FirstDropDown'
+                                            className='dropdown-trigger'
+                                            data-target={navLink.linkUrl}
+                                            onClick={(e) =>
+                                                M.Dropdown.getInstance(e.target)
+                                            }>
+                                            {navLink.linkName}
+                                            <i className='material-icons right'>
+                                                arrow_drop_down
+                                            </i>
+                                        </a>
+                                        <ul
+                                            id={navLink.linkUrl}
+                                            className='dropdown-content'>
+                                            {nl.map((dropArray) => {
+                                                return (
+                                                    <li key={dropArray.dropUrl}>
+                                                        <NavLink
+                                                            to={`/${dropArray.dropUrl}`}>
+                                                            {
+                                                                dropArray.dropLinkName
+                                                            }
+                                                        </NavLink>
+                                                    </li>
+                                                );
+                                            })}
+                                        </ul>
+                                    </li>
+                                );
+                            }
+                        })}
+                        {auth.isAuthenticated === true && (
+                            <>
                                 <li>
-                                    <a href='#!'>one</a>
+                                    <NavLink to='/create'>Создать</NavLink>
                                 </li>
                                 <li>
-                                    <a href='#!'>two</a>
+                                    <a href='/' onClick={logoutHandler}>
+                                        Выйти
+                                    </a>
                                 </li>
-                                <li className='divider'></li>
-                                <li>
-                                    <a href='#!'>three</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a>About</a>
-                        </li>
+                            </>
+                        )}
+                        {auth.isAuthenticated === false && (
+                            <li>
+                                <NavLink to='/authpage'>Войти</NavLink>
+                            </li>
+                        )}
                     </ul>
                 </div>
             </nav>
@@ -162,23 +199,23 @@ export const Navbar = () => {
     //                     }
     //                 })}
 
-    //                 {auth.isAuthenticated === true && (
-    //                     <>
-    //                         <li>
-    //                             <NavLink to='/create'>Создать</NavLink>
-    //                         </li>
-    //                         <li>
-    //                             <a href='/' onClick={logoutHandler}>
-    //                                 Выйти
-    //                             </a>
-    //                         </li>
-    //                     </>
-    //                 )}
-    //                 {auth.isAuthenticated === false && (
-    //                     <li>
-    //                         <NavLink to='/authpage'>Войти</NavLink>
-    //                     </li>
-    //                 )}
+    // {auth.isAuthenticated === true && (
+    //     <>
+    //         <li>
+    //             <NavLink to='/create'>Создать</NavLink>
+    //         </li>
+    //         <li>
+    //             <a href='/' onClick={logoutHandler}>
+    //                 Выйти
+    //             </a>
+    //         </li>
+    //     </>
+    // )}
+    // {auth.isAuthenticated === false && (
+    //     <li>
+    //         <NavLink to='/authpage'>Войти</NavLink>
+    //     </li>
+    // )}
     //             </ul>
     //         </div>
     //     </nav>
