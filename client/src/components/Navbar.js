@@ -33,8 +33,8 @@ export const Navbar = () => {
         },
         {
             _id: 2,
-            linkUrl: "stream",
-            linkName: "Стрим",
+            linkUrl: "stream2",
+            linkName: "дроп1",
             dropList: [
                 { _id: 1, dropUrl: "stream1", dropLinkName: "Стрим1" },
                 { _id: 2, dropUrl: "stream2", dropLinkName: "Стрим2" },
@@ -44,12 +44,18 @@ export const Navbar = () => {
         {
             _id: 3,
             linkUrl: "stream4",
-            linkName: "Стрим",
+            linkName: "дроп2",
             dropList: [
                 { _id: 1, dropUrl: "stream1", dropLinkName: "Стрим5" },
                 { _id: 2, dropUrl: "stream2", dropLinkName: "Стрим6" },
                 { _id: 3, dropUrl: "stream3", dropLinkName: "Стрим7" },
             ],
+        },
+        {
+            _id: 4,
+            linkUrl: "stream",
+            linkName: "Стрим",
+            dropList: [],
         },
     ];
 
@@ -62,9 +68,9 @@ export const Navbar = () => {
                         {navbarLinks.map((navLink) => {
                             if (navLink.dropList.length == 0) {
                                 return (
-                                    <li key={navLink._id} className='active'>
+                                    <li key={navLink._id}>
                                         <NavLink to={`/${navLink.linkUrl}`}>
-                                            {navLink.linkName}123
+                                            {navLink.linkName}
                                         </NavLink>
                                     </li>
                                 );
