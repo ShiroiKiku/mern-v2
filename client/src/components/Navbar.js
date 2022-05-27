@@ -25,12 +25,12 @@ export const Navbar = () => {
         M.Dropdown.init(dropdowns, options);
     }, []);
     const navbarLinks = [
-        {
-            _id: 1,
-            linkUrl: "links",
-            linkName: "Ссылки",
-            dropList: [],
-        },
+        // {
+        //     _id: 1,
+        //     linkUrl: "links",
+        //     linkName: "Ссылки",
+        //     dropList: [],
+        // },
         {
             _id: 2,
             linkUrl: "stream2",
@@ -55,6 +55,12 @@ export const Navbar = () => {
             _id: 4,
             linkUrl: "stream",
             linkName: "Стрим",
+            dropList: [],
+        },
+        {
+            _id: 5,
+            linkUrl: "createlink",
+            linkName: "создание ссылки",
             dropList: [],
         },
     ];

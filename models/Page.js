@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const { Schema, model, Types } = require("mongoose");
 const schema = new Schema({
     linkUrl: { type: String, required: true },
@@ -7,4 +8,5 @@ const schema = new Schema({
     body: { type: String },
     date: { type: Date, default: Date.now },
 });
+
 module.exports = model("Page", schema);
