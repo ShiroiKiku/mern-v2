@@ -71,6 +71,11 @@ export const AuthPage = () => {
                                     className='yellow-input'
                                     value={form.password}
                                     onChange={changeHandler}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            loginHandler();
+                                        }
+                                    }}
                                 />
                                 <label htmlFor='password'>Пароль</label>
                             </div>

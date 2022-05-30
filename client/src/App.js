@@ -6,6 +6,8 @@ import { AuthContext } from "./context/AuthContext";
 import { Navbar } from "./components/Navbar";
 import { Loader } from "./components/Loader";
 import "materialize-css";
+import Footer from "./components/Footer";
+
 // import "bootstrap";
 
 function App() {
@@ -28,7 +30,8 @@ function App() {
             }}>
             <Router>
                 <Navbar />
-                <div className='container'>{routes}</div>
+                <main className='container main'>{routes}</main>
+                <Footer />
             </Router>
         </AuthContext.Provider>
     );

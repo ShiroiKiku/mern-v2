@@ -1,36 +1,12 @@
-import React, { useCallback, useState, useEffect } from "react";
-import { Switch, Route, Redirect, Link } from "react-router-dom";
-import { LinksPage } from "./pages/LinksPage";
+import React from "react";
+import { Switch, Route, Redirect } from "react-router-dom";
 import { CreatePage } from "./pages/CreatePage";
 import { DetailPage } from "./pages/DetailPage";
 import { AuthPage } from "./pages/AuthPage";
 import { CreateLink } from "./pages/CreateLink";
-import { LinkPage } from "./pages/LinkPage";
-import VideoPlayer from "./components/VideoPlayer";
-
-import { Loader } from "./components/Loader";
-
-import { useHttp } from "./hooks/http.hook";
+import { PagesRoutes } from "./components/PagesRoutes";
 
 export const useRoutes = (isAuthenticated) => {
-    const { request, loading } = useHttp();
-    const [pages, setPages] = useState(null);
-
-    const getPages = useCallback(async () => {
-        try {
-            const fetched = await request(`/api/page/pageroutes`, "GET");
-            setPages(fetched);
-        } catch (e) {}
-    }, [request]);
-
-    useEffect(() => {
-        getPages();
-    }, [getPages]);
-
-    if (loading) {
-        return <Loader />;
-    }
-
     if (isAuthenticated) {
         return (
             <Switch>
@@ -47,16 +23,7 @@ export const useRoutes = (isAuthenticated) => {
                 {/* <Route path='/stream'>
                     <VideoPlayer />
                 </Route> */}
-                {!loading &&
-                    pages &&
-                    pages.map((page) => {
-                        return (
-                            <Route key={page.linkUrl} path={`/${page.linkUrl}`}>
-                                <LinkPage />
-                            </Route>
-                        );
-                    })}
-
+                <PagesRoutes />
                 <Redirect to='/createlink' />
             </Switch>
         );
@@ -73,7 +40,7 @@ export const useRoutes = (isAuthenticated) => {
             {/* <Route path='/stream'>
                 <VideoPlayer />
             </Route> */}
-
+            <PagesRoutes />
             <Redirect to='/create' />
         </Switch>
     );

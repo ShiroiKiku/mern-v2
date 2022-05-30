@@ -1,8 +1,8 @@
-import React from "react";
 import React, { useCallback, useState, useEffect } from "react";
-import { Switch, Route, Redirect, Link } from "react-router-dom";
-
+import { Route } from "react-router-dom";
+import { OtherPage } from "../pages/OtherPage";
 import { useHttp } from "../hooks/http.hook";
+import { Loader } from "./Loader";
 
 export const PagesRoutes = () => {
     const { request, loading } = useHttp();
@@ -18,6 +18,19 @@ export const PagesRoutes = () => {
     useEffect(() => {
         getPages();
     }, [getPages]);
+    if (loading) {
+        return <Loader />;
+    }
 
-    return <div></div>;
+    return (
+        !loading &&
+        pages &&
+        pages.map((page) => {
+            return (
+                <Route key={page.linkUrl} path={`/${page.linkUrl}`}>
+                    <OtherPage page={page} />
+                </Route>
+            );
+        })
+    );
 };

@@ -66,77 +66,70 @@ export const Navbar = () => {
     ];
 
     return (
-        <div>
-            <nav className='blue darken-2'>
-                <div className='nav-wrapper'>
-                    <span className='brand-logo'>ГУК СОСБС</span>
-                    <ul id='nav-mobile' className='right hide-on-med-and-down'>
-                        {navbarLinks.map((navLink) => {
-                            if (navLink.dropList.length == 0) {
-                                return (
-                                    <li key={navLink._id}>
-                                        <NavLink to={`/${navLink.linkUrl}`}>
-                                            {navLink.linkName}
-                                        </NavLink>
-                                    </li>
-                                );
-                            } else {
-                                const nl = navLink.dropList;
-                                return (
-                                    <li key={navLink._id}>
-                                        <a
-                                            id='FirstDropDown'
-                                            className='dropdown-trigger'
-                                            data-target={navLink.linkUrl}
-                                            onClick={(e) =>
-                                                M.Dropdown.getInstance(e.target)
-                                            }>
-                                            {navLink.linkName}
-                                            <i className='material-icons right'>
-                                                arrow_drop_down
-                                            </i>
-                                        </a>
-                                        <ul
-                                            id={navLink.linkUrl}
-                                            className='dropdown-content'>
-                                            {nl.map((dropArray) => {
-                                                return (
-                                                    <li key={dropArray.dropUrl}>
-                                                        <NavLink
-                                                            to={`/${dropArray.dropUrl}`}>
-                                                            {
-                                                                dropArray.dropLinkName
-                                                            }
-                                                        </NavLink>
-                                                    </li>
-                                                );
-                                            })}
-                                        </ul>
-                                    </li>
-                                );
-                            }
-                        })}
-                        {auth.isAuthenticated === true && (
-                            <>
-                                <li>
-                                    <NavLink to='/create'>Создать</NavLink>
+        <nav className='blue darken-2'>
+            <div className='nav-wrapper'>
+                <span className='brand-logo'>ГУК СОСБС</span>
+                <ul id='nav-mobile' className='right hide-on-med-and-down'>
+                    {navbarLinks.map((navLink) => {
+                        if (navLink.dropList.length === 0) {
+                            return (
+                                <li key={navLink._id}>
+                                    <NavLink to={`/${navLink.linkUrl}`}>
+                                        {navLink.linkName}
+                                    </NavLink>
                                 </li>
-                                <li>
-                                    <a href='/' onClick={logoutHandler}>
-                                        Выйти
+                            );
+                        } else {
+                            const nl = navLink.dropList;
+                            return (
+                                <li key={navLink._id}>
+                                    <a
+                                        id='FirstDropDown'
+                                        className='dropdown-trigger'
+                                        data-target={navLink.linkUrl}
+                                        onClick={(e) =>
+                                            M.Dropdown.getInstance(e.target)
+                                        }>
+                                        {navLink.linkName}
+                                        <i className='material-icons right'>
+                                            arrow_drop_down
+                                        </i>
                                     </a>
+                                    <ul
+                                        id={navLink.linkUrl}
+                                        className='dropdown-content'>
+                                        {nl.map((dropArray) => {
+                                            return (
+                                                <li key={dropArray.dropUrl}>
+                                                    <NavLink
+                                                        to={`/${dropArray.dropUrl}`}>
+                                                        {dropArray.dropLinkName}
+                                                    </NavLink>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
                                 </li>
-                            </>
-                        )}
-                        {auth.isAuthenticated === false && (
+                            );
+                        }
+                    })}
+                    {auth.isAuthenticated === true && (
+                        <>
                             <li>
-                                <NavLink to='/authpage'>Войти</NavLink>
+                                <NavLink to='/' onClick={logoutHandler}>
+                                    Выйти
+                                </NavLink>
                             </li>
-                        )}
-                    </ul>
-                </div>
-            </nav>
-        </div>
+                        </>
+                    )}
+                    {auth.isAuthenticated === false && (
+                        <li>
+                            <NavLink to='/authpage'>Войти</NavLink>
+                        </li>
+                    )}
+                </ul>
+            </div>
+        </nav>
     );
     // return (
     //     <nav>

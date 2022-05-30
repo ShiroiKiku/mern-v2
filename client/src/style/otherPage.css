@@ -1,0 +1,10 @@
+.row > div > div {
+    margin: 15px;
+    padding: 10px;
+}
+.row > div > div > * {
+    margin: 10px;
+}
+.text-content > p {
+    text-align: justify;
+}
