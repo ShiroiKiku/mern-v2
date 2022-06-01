@@ -53,12 +53,18 @@ export const Navbar = () => {
         },
         {
             _id: 4,
+            linkUrl: "videochat",
+            linkName: "Видеоконференция",
+            dropList: [],
+        },
+        {
+            _id: 5,
             linkUrl: "stream",
             linkName: "Стрим",
             dropList: [],
         },
         {
-            _id: 5,
+            _id: 6,
             linkUrl: "createlink",
             linkName: "создание ссылки",
             dropList: [],
@@ -131,98 +137,4 @@ export const Navbar = () => {
             </div>
         </nav>
     );
-    // return (
-    //     <nav>
-    //         <div
-    //             className='nav-wrapper blue darken-1'
-    //             style={{ padding: "0 2rem" }}>
-    //             <span className='brand-logo'>ГУК СОСБС</span>
-    //             <ul id='nav-mobile' className='right hide-on-med-and-down'>
-    //                 {navbarLinks.map((navLink) => {
-    //                     if (navLink.dropList.length == 0) {
-    //                         return (
-    //                             <li key={navLink._id} className='active'>
-    //                                 <NavLink to={`/${navLink.linkUrl}`}>
-    //                                     {navLink.linkName}123
-    //                                 </NavLink>
-    //                             </li>
-    //                         );
-    //                     } else {
-    //                         return (
-    //                             <li>
-    //                                 <a
-    //                                     id='FirstDropDown'
-    //                                     className='dropdown-trigger'
-    //                                     href='#!'
-    //                                     data-target='dropdown1'
-    //                                     onMouseEnter={(e) =>
-    //                                         M.Dropdown.getInstance(e.target) &&
-    //                                         M.Dropdown.getInstance(
-    //                                             e.target
-    //                                         ).open()
-    //                                     }
-    //                                     onMouseLeave={(e) =>
-    //                                         M.Dropdown.getInstance(e.target) &&
-    //                                         M.Dropdown.getInstance(
-    //                                             e.target
-    //                                         ).close()
-    //                                     }>
-    //                                     Dropdown{" "}
-    //                                     <i className='material-icons right'>
-    //                                         arrow_drop_down
-    //                                     </i>
-    //                                 </a>
-    //                                 <ul
-    //                                     style={{
-    //                                         marginLeft: "500px",
-    //                                         display: "none",
-    //                                     }}
-    //                                     id='dropdown1'
-    //                                     className='dropdown-content'>
-    //                                     <li
-    //                                         style={{
-    //                                             backgroundColor: "yellow",
-    //                                         }}>
-    //                                         <a href='#!'>one</a>
-    //                                     </li>
-    //                                     <li
-    //                                         style={{
-    //                                             backgroundColor: "red",
-    //                                         }}>
-    //                                         <a href='#!'>two</a>
-    //                                     </li>
-    //                                     <li className='divider'></li>
-    //                                     <li
-    //                                         style={{
-    //                                             backgroundColor: "purple",
-    //                                         }}>
-    //                                         <a href='#!'>three</a>
-    //                                     </li>
-    //                                 </ul>
-    //                             </li>
-    //                         );
-    //                     }
-    //                 })}
-
-    // {auth.isAuthenticated === true && (
-    //     <>
-    //         <li>
-    //             <NavLink to='/create'>Создать</NavLink>
-    //         </li>
-    //         <li>
-    //             <a href='/' onClick={logoutHandler}>
-    //                 Выйти
-    //             </a>
-    //         </li>
-    //     </>
-    // )}
-    // {auth.isAuthenticated === false && (
-    //     <li>
-    //         <NavLink to='/authpage'>Войти</NavLink>
-    //     </li>
-    // )}
-    //             </ul>
-    //         </div>
-    //     </nav>
-    // );
 };

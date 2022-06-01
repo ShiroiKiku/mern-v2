@@ -5,6 +5,7 @@ import { DetailPage } from "./pages/DetailPage";
 import { AuthPage } from "./pages/AuthPage";
 import { CreateLink } from "./pages/CreateLink";
 import { PagesRoutes } from "./components/PagesRoutes";
+import VideoChat from "./pages/VideoChat";
 
 export const useRoutes = (isAuthenticated) => {
     if (isAuthenticated) {
@@ -18,6 +19,9 @@ export const useRoutes = (isAuthenticated) => {
                 </Route>
                 <Route path='/createlink'>
                     <CreateLink />
+                </Route>
+                <Route path='/videochat'>
+                    <VideoChat />
                 </Route>
 
                 {/* <Route path='/stream'>
