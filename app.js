@@ -13,6 +13,7 @@ app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/link", require("./routes/link.routes"));
 app.use("/api/page", require("./routes/page.routes"));
 app.use("/t", require("./routes/redirect.routes"));
+app.use("/api/videochat", require("./routes/videochat.routes"));
 
 if (process.env.NODE_ENV === "production") {
     app.use("/", express.static(path.join(__dirname, "client", "build")));
