@@ -4,8 +4,11 @@ const path = require("path");
 const mongoose = require("mongoose");
 const NodeMediaServer = require("node-media-server");
 const configNMS = require("./config/confignms");
+// const server = require("node-media-server/src/api/routes/server");
 
 const app = express();
+
+const PORT = config.get("port") || 5000;
 
 app.use(express.json({ extended: true }));
 
@@ -14,6 +17,7 @@ app.use("/api/link", require("./routes/link.routes"));
 app.use("/api/page", require("./routes/page.routes"));
 app.use("/t", require("./routes/redirect.routes"));
 app.use("/api/videochat", require("./routes/videochat.routes"));
+app.use("/api/vch", require("./routes/vch.routes"));
 
 if (process.env.NODE_ENV === "production") {
     app.use("/", express.static(path.join(__dirname, "client", "build")));
@@ -23,8 +27,6 @@ if (process.env.NODE_ENV === "production") {
     });
 }
 
-const PORT = config.get("port") || 5000;
-
 async function start() {
     try {
         await mongoose.connect(config.get("mongoUri"), {
@@ -32,17 +34,36 @@ async function start() {
             useUnifiedTopology: true,
             useCreateIndex: true,
         });
-        app.listen(PORT, () =>
-            console.log(`App has been started on port ${PORT}...`)
-        );
     } catch (e) {
         console.log("Server Error", e.message);
         process.exit(1);
     }
 }
+
 //node-media-server
 
 var nms = new NodeMediaServer(configNMS);
-nms.run();
+// nms.run();
+const server = app.listen(PORT, () =>
+    console.log(`App listening on port ${PORT}!`)
+);
+var io = require("./sockets/socket").initialize(server);
+
+io.on("connection", (socket) => {
+    console.log("socket.id подключился", socket.id);
+
+    socket.on("test", (data) => {
+        console.log("data", data);
+    });
+    socket.on("join-room", (roomId, userId) => {
+        socket.join(roomId); // Join the room
+        socket.broadcast.emit("user-connected", userId); // Tell everyone else in the room that we joined
+
+        // Communicate the disconnection
+        socket.on("disconnect", () => {
+            socket.broadcast.emit("user-disconnected", userId);
+        });
+    });
+});
 
 start();
