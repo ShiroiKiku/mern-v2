@@ -25,8 +25,8 @@ export const useRoutes = (isAuthenticated) => {
                 <Route path='/videochat'>
                     <VideoChat />
                 </Route>
-                <Route path='/videochatname'>
-                    <VideoChatName />
+                <Route path='/videochat'>
+                    <VideoChat />
                 </Route>
                 <Route path='/testpage'>
                     <TestPage />

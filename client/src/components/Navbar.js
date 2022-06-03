@@ -53,10 +53,11 @@ export const Navbar = () => {
         },
         {
             _id: 4,
-            linkUrl: "videochatname",
-            linkName: "Видеоконференция",
+            linkUrl: "videochat",
+            linkName: "videochat",
             dropList: [],
         },
+
         {
             _id: 5,
             linkUrl: "stream",
