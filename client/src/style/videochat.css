@@ -1,0 +1,19 @@
+.myVideo {
+    border: 3px #00b344 solid;
+}
+.dem {
+    margin-top: 20px;
+
+    margin-bottom: 20px;
+    margin-left: -50%;
+    width: 90vw;
+}
+.dem_close {
+    display: none;
+}
+.dem_open {
+    display: block;
+}
+.user-video {
+    width: 100% !important;
+}

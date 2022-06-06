@@ -50,18 +50,18 @@ const server = app.listen(PORT, () =>
 var io = require("./sockets/socket").initialize(server);
 
 io.on("connection", (socket) => {
-    console.log("socket.id подключился", socket.id);
+    //Полозователь зашел
+    socket.on("join-room", (roomId, userId, userName, orgName) => {
+        console.log(userId);
+        // Подключился к комнате
+        socket.join(roomId);
+        //Данные о пользователе отправляются другим пользователям
+        socket.broadcast.emit("user-connected", userId, userName, orgName);
 
-    socket.on("test", (data) => {
-        console.log("data", data);
-    });
-    socket.on("join-room", (roomId, userId) => {
-        socket.join(roomId); // Join the room
-        socket.broadcast.emit("user-connected", userId); // Tell everyone else in the room that we joined
-
-        // Communicate the disconnection
+        // Пользователь отключился
         socket.on("disconnect", () => {
             socket.broadcast.emit("user-disconnected", userId);
+            socket.emit("user-disconnected", userId);
         });
     });
 });

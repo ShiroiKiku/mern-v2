@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-
+import "../style/navbar.css";
 import M from "materialize-css";
 
 export const Navbar = () => {
