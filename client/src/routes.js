@@ -6,7 +6,8 @@ import { AuthPage } from "./pages/AuthPage";
 import { CreateLink } from "./pages/CreateLink";
 import { PagesRoutes } from "./components/PagesRoutes";
 import VideoChat from "./pages/VideoChat";
-import VideoChatName from "./pages/VideoChatName";
+import VideoPlayer from "./components/VideoPlayer";
+
 import TestPage from "./pages/TestPage";
 
 export const useRoutes = (isAuthenticated) => {
@@ -32,9 +33,9 @@ export const useRoutes = (isAuthenticated) => {
                     <TestPage />
                 </Route>
 
-                {/* <Route path='/stream'>
+                <Route path='/stream'>
                     <VideoPlayer />
-                </Route> */}
+                </Route>
                 <PagesRoutes />
                 <Redirect to='/createlink' />
             </Switch>
@@ -49,9 +50,9 @@ export const useRoutes = (isAuthenticated) => {
             <Route path='/authpage' exact>
                 <AuthPage />
             </Route>
-            {/* <Route path='/stream'>
+            <Route path='/stream'>
                 <VideoPlayer />
-            </Route> */}
+            </Route>
             <PagesRoutes />
             <Redirect to='/create' />
         </Switch>

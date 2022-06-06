@@ -4,7 +4,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const NodeMediaServer = require("node-media-server");
 const configNMS = require("./config/confignms");
-// const server = require("node-media-server/src/api/routes/server");
+const serve = require("node-media-server/src/api/routes/server");
 
 const app = express();
 
@@ -43,7 +43,7 @@ async function start() {
 //node-media-server
 
 var nms = new NodeMediaServer(configNMS);
-// nms.run();
+nms.run();
 const server = app.listen(PORT, () =>
     console.log(`App listening on port ${PORT}!`)
 );
