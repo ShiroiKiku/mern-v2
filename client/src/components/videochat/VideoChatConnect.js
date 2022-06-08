@@ -8,7 +8,7 @@ const VideoChatConnect = (ROOM_ID, form) => {
     const videoGrid = document.getElementById("video-grid"); // Find the Video-Grid element
     const myPeer = new Peer(); // Creating a peer element which represents the current user
     const myVideo = document.createElement("video"); // Create a new video tag to show our video
-    myVideo.classList.add("col", "s4", "myVideo");
+    myVideo.classList.add("myVideo");
 
     navigator.mediaDevices
         .getUserMedia({

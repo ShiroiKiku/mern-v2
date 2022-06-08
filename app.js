@@ -18,7 +18,7 @@ app.use("/api/page", require("./routes/page.routes"));
 app.use("/t", require("./routes/redirect.routes"));
 app.use("/api/videochat", require("./routes/videochat.routes"));
 app.use("/api/vch", require("./routes/vch.routes"));
-
+app.use("/api/videochatdata", require("./routes/videouserdata.routes"));
 if (process.env.NODE_ENV === "production") {
     app.use("/", express.static(path.join(__dirname, "client", "build")));
 
@@ -51,13 +51,15 @@ var io = require("./sockets/socket").initialize(server);
 
 io.on("connection", (socket) => {
     //Полозователь зашел
-    socket.on("join-room", (roomId, userId, userName, orgName) => {
-        console.log(userId);
+    socket.on("join-room", (roomId, userId) => {
         // Подключился к комнате
         socket.join(roomId);
         //Данные о пользователе отправляются другим пользователям
-        socket.broadcast.emit("user-connected", userId, userName, orgName);
-
+        socket.broadcast.emit("user-connected", userId);
+        socket.on("connect-screen", (userIdScreen) => {
+            console.log(userIdScreen);
+            socket.broadcast.emit("connect-screen-on", userIdScreen);
+        });
         // Пользователь отключился
         socket.on("disconnect", () => {
             socket.broadcast.emit("user-disconnected", userId);

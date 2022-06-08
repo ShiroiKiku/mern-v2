@@ -9,6 +9,8 @@ import VideoChat from "./pages/VideoChat";
 import VideoPlayer from "./components/VideoPlayer";
 
 import TestPage from "./pages/TestPage";
+import VideoСonferencePage from "./pages/VideoСonferencePage";
+import TestDemon from "./pages/TestDemon";
 
 export const useRoutes = (isAuthenticated) => {
     if (isAuthenticated) {
@@ -23,11 +25,9 @@ export const useRoutes = (isAuthenticated) => {
                 <Route path='/createlink'>
                     <CreateLink />
                 </Route>
+
                 <Route path='/videochat'>
-                    <VideoChat />
-                </Route>
-                <Route path='/videochat'>
-                    <VideoChat />
+                    <VideoСonferencePage />
                 </Route>
                 <Route path='/testpage'>
                     <TestPage />
@@ -35,6 +35,9 @@ export const useRoutes = (isAuthenticated) => {
 
                 <Route path='/stream'>
                     <VideoPlayer />
+                </Route>
+                <Route path='/testdem'>
+                    <TestDemon />
                 </Route>
                 <PagesRoutes />
                 <Redirect to='/createlink' />

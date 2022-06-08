@@ -1,0 +1,16 @@
+.video-grid {
+}
+.video-grid > video {
+    width: 33%;
+    margin: 10px;
+}
+
+.myVideo {
+    border: 3px #00b344 solid;
+}
+.dem_close {
+    display: none;
+}
+.dem_open {
+    display: block;
+}
