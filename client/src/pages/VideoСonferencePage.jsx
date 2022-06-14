@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import userConnect from "../components/videoconference/userConnect";
 import "../style/videoconference.css";
 
@@ -24,40 +23,46 @@ const VideoСonferencePage = () => {
         const data = await response.json();
         setScreenId(data);
     };
-    useEffect(() => {
-        if (ROOM_ID) {
-            const videoStream = navigator.mediaDevices.getUserMedia({
-                video: { width: 854, height: 480 },
-                audio: true,
-            });
-            userConnect(
-                ROOM_ID,
-                videoStream,
-                "video",
-                form.userName,
-                form.orgName
-            );
+    useEffect(
+        () => {
+            if (ROOM_ID) {
+                const videoStream = navigator.mediaDevices.getUserMedia({
+                    video: { width: 854, height: 480 },
+                    audio: true,
+                });
+                userConnect(
+                    ROOM_ID,
+                    videoStream,
+                    "video",
+                    form.userName,
+                    form.orgName
+                );
+            }
         }
-    }, [ROOM_ID]);
-    useEffect(() => {
-        if (screenId) {
-            const videoStream = navigator.mediaDevices.getDisplayMedia({
-                video: { width: 1280, height: 720 },
-                audio: true,
-            });
-            setTimeout(
-                () =>
-                    userConnect(
-                        screenId,
-                        videoStream,
-                        "screen",
-                        form.userName,
-                        form.orgName
-                    ),
-                7500
-            );
+        // , [ROOM_ID]
+    );
+    useEffect(
+        () => {
+            if (screenId) {
+                const videoStream = navigator.mediaDevices.getDisplayMedia({
+                    video: { width: 1280, height: 720 },
+                    audio: true,
+                });
+                setTimeout(
+                    () =>
+                        userConnect(
+                            screenId,
+                            videoStream,
+                            "screen",
+                            form.userName,
+                            form.orgName
+                        ),
+                    7500
+                );
+            }
         }
-    }, [screenId]);
+        // , [screenId]
+    );
 
     //
 
@@ -78,6 +83,7 @@ const VideoСonferencePage = () => {
                                             name='userName'
                                             value={form.userName}
                                             onChange={changeHandler}
+                                            required
                                         />
                                         <label htmlFor='userName'>
                                             Введите Ваше имя
@@ -91,6 +97,7 @@ const VideoСonferencePage = () => {
                                             value={form.orgName}
                                             name='orgName'
                                             onChange={changeHandler}
+                                            required
                                         />
                                         <label htmlFor='orgName'>
                                             Введите название Вашей организации

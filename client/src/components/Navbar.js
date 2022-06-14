@@ -75,7 +75,7 @@ export const Navbar = () => {
     return (
         <nav className='blue darken-2'>
             <div className='nav-wrapper'>
-                <span className='brand-logo'>ГУК СОСБС</span>
+                <span className='brand-logo'>Suite test</span>
                 <ul id='nav-mobile' className='right hide-on-med-and-down'>
                     {navbarLinks.map((navLink) => {
                         if (navLink.dropList.length === 0) {

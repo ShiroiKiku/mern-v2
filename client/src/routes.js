@@ -5,9 +5,7 @@ import { DetailPage } from "./pages/DetailPage";
 import { AuthPage } from "./pages/AuthPage";
 import { CreateLink } from "./pages/CreateLink";
 import { PagesRoutes } from "./components/PagesRoutes";
-import VideoChat from "./pages/VideoChat";
 import VideoPlayer from "./components/VideoPlayer";
-
 import TestPage from "./pages/TestPage";
 import VideoСonferencePage from "./pages/VideoСonferencePage";
 import TestDemon from "./pages/TestDemon";

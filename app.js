@@ -4,7 +4,9 @@ const path = require("path");
 const mongoose = require("mongoose");
 const NodeMediaServer = require("node-media-server");
 const configNMS = require("./config/confignms");
-const serve = require("node-media-server/src/api/routes/server");
+const url = require("url");
+
+// const serve = require("node-media-server/src/api/routes/server");
 
 const app = express();
 
@@ -13,7 +15,7 @@ const PORT = config.get("port") || 5000;
 app.use(express.json({ extended: true }));
 
 app.use("/api/auth", require("./routes/auth.routes"));
-app.use("/api/link", require("./routes/link.routes"));
+
 app.use("/api/page", require("./routes/page.routes"));
 app.use("/t", require("./routes/redirect.routes"));
 app.use("/api/videochat", require("./routes/videochat.routes"));
@@ -61,11 +63,36 @@ io.on("connection", (socket) => {
             socket.broadcast.emit("connect-screen-on", userIdScreen);
         });
         // Пользователь отключился
-        socket.on("disconnect", () => {
+        socket.on("disconnect", async () => {
             socket.broadcast.emit("user-disconnected", userId);
-            socket.emit("user-disconnected", userId);
+            // socket.emit("user-disconnected", userId);
+            await userDelite(userId);
+            // fetch("localhost:5000/api/videochatdata/deldata"),
+            //     {
+            //         method: "POST",
+            //         body: JSON.stringify(userId),
+            //         headers: { "Content-Type": "application/json" },
+            //     };
         });
     });
 });
+
+const userDelite = async (userId) => {
+    try {
+        const form = {
+            userId: userId,
+        };
+
+        const userDel = JSON.stringify(form);
+
+        await fetch("http://localhost:5000/api/videochatdata/deldata", {
+            method: "POST",
+            body: userDel,
+            headers: { "Content-Type": "application/json" },
+        });
+    } catch (e) {
+        console.log(e);
+    }
+};
 
 start();

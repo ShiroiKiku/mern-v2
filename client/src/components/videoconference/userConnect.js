@@ -22,12 +22,21 @@ const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
                 userId: id,
                 videoType: screen,
             };
-            console.log(form);
-            const formSave = JSON.stringify(form);
-            console.log(formSave);
-            await fetch("/api/videochatdata/savedata", {
+
+            fetch("/api/videochatdata/savedata", {
                 method: "POST",
-                body: formSave,
+                body: JSON.stringify(form),
+                headers: { "Content-Type": "application/json" },
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    };
+    const findUser = async (id) => {
+        try {
+            return await fetch("/api/videochatdata/finduser", {
+                method: "POST",
+                body: JSON.stringify({ userId: id }),
                 headers: { "Content-Type": "application/json" },
             });
         } catch (e) {
@@ -35,18 +44,31 @@ const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
         }
     };
 
+    const userInfo = async (userId) => {
+        try {
+            const userInfo = await findUser(userId).then((response) =>
+                response.json()
+            );
+            console.log(userInfo.userName);
+        } catch (error) {}
+    };
     videoStream.then((stream) => {
+        console.log(1);
         addVideoStream(myVideo, stream); // Display our video to ourselves
 
-        myPeer.on("call", (call) => {
+        myPeer.on("call", async (call) => {
+            console.log(22);
             // When we join someone's room we will receive a call from them
             call.answer(stream); // Stream them our video/audio
+            console.log(222);
             const video = document.createElement("video"); // Create a video tag for them
             video.id = call.peer;
+            //
+            userInfo(call.peer);
             call.on("stream", (userVideoStream) => {
                 // When we recieve their stream
-                console.log(userVideoStream);
-                addVideoStream(video, userVideoStream); // Display their video to ourselves
+                console.log(2);
+                addVideoStream(video, userVideoStream, call.peer); // Display their video to ourselves
             });
         });
 
@@ -64,23 +86,24 @@ const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
 
     myPeer.on("open", (id) => {
         // When we first open the app, have us join a room
-        console.log("досюда ты значит дошел");
+
         saveHandler(id);
         // ret = id;
         socket.emit("join-room", ROOM_ID, id);
     });
 
-    function connectToNewUser(userId, stream) {
+    async function connectToNewUser(userId, stream) {
         // This runs when someone joins our room
         const call = myPeer.call(userId, stream); // Call the user who just joined
         // Add their video
-
+        console.log(33);
         const video = document.createElement("video");
         video.id = userId;
-
+        userInfo(userId);
         call.on("stream", (userVideoStream) => {
             if (screen === "video") {
-                addVideoStream(video, userVideoStream);
+                console.log(3);
+                addVideoStream(video, userVideoStream, userId);
 
                 videoGrid.appendChild(video);
             }
@@ -90,20 +113,16 @@ const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
         // This runs when someone joins our room
         document.getElementById(userId).remove();
     }
-    function addVideoStream(video, stream) {
+    async function addVideoStream(video, stream, userId) {
         if (screen === "video") {
             video.srcObject = stream;
             video.addEventListener("loadedmetadata", () => {
                 // Play the video as it loads
                 if (video.classList.contains("myVideo")) {
                     video.muted = true;
-                    video.play();
-
-                    videoGrid.append(video); // Append video element to videoGrid
-                } else {
-                    video.play();
-                    videoGrid.append(video); // Append video element to videoGrid
                 }
+                video.play();
+                videoGrid.append(video);
             });
         }
     }
