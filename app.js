@@ -91,7 +91,7 @@ const userDelite = async (userId) => {
             headers: { "Content-Type": "application/json" },
         });
     } catch (e) {
-        console.log(e);
+        console.log("fetch ошибка на сервере", e);
     }
 };
 

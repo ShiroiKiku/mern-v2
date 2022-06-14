@@ -6,6 +6,7 @@ const VideoСonferencePage = () => {
     const [ROOM_ID, setROOM_ID] = useState(null);
 
     const [screenId, setScreenId] = useState(null);
+    const [screenReady, setScreenReady] = useState(null);
     const [form, setForm] = useState({
         userName: "",
         orgName: "",
@@ -22,49 +23,64 @@ const VideoСonferencePage = () => {
         const response = await fetch("/api/videochat");
         const data = await response.json();
         setScreenId(data);
+        console.log(data);
     };
-    useEffect(
-        () => {
-            if (ROOM_ID) {
-                const videoStream = navigator.mediaDevices.getUserMedia({
-                    video: { width: 854, height: 480 },
-                    audio: true,
-                });
-                userConnect(
-                    ROOM_ID,
-                    videoStream,
-                    "video",
-                    form.userName,
-                    form.orgName
-                );
-            }
+    useEffect(() => {
+        if (ROOM_ID) {
+            const videoStream = navigator.mediaDevices.getUserMedia({
+                video: { width: 854, height: 480 },
+                audio: true,
+            });
+            userConnect(
+                ROOM_ID,
+                videoStream,
+                "video",
+                form.userName,
+                form.orgName
+            );
         }
-        // , [ROOM_ID]
-    );
-    useEffect(
-        () => {
-            if (screenId) {
-                const videoStream = navigator.mediaDevices.getDisplayMedia({
-                    video: { width: 1280, height: 720 },
-                    audio: true,
-                });
-                setTimeout(
-                    () =>
-                        userConnect(
-                            screenId,
-                            videoStream,
-                            "screen",
-                            form.userName,
-                            form.orgName
-                        ),
-                    7500
-                );
-            }
+    }, [ROOM_ID]);
+    useEffect(() => {
+        if (screenReady !== null) {
+            console.log(screenReady);
+            userConnect(
+                screenId,
+                screenReady,
+                "screen",
+                form.userName,
+                form.orgName
+            );
         }
-        // , [screenId]
-    );
+    }, [screenReady]);
+    useEffect(() => {
+        if (screenId) {
+            async function startCapture() {
+                let captureStream = null;
 
-    //
+                try {
+                    captureStream =
+                        await navigator.mediaDevices.getDisplayMedia({
+                            video: { width: 1280, height: 720 },
+                            audio: true,
+                        });
+                } catch (err) {
+                    console.error("Error: " + err);
+                }
+                return captureStream;
+            }
+            // const ready = async () => {
+            //     const videoScreen = navigator.mediaDevices.getDisplayMedia({
+            //         video: { width: 1280, height: 720 },
+            //         audio: true,
+            //     });
+            //     return await videoScreen;
+            // };
+
+            startCapture().then((result) => {
+                setScreenReady(startCapture());
+            });
+        }
+    }, [screenId]);
 
     return (
         <>

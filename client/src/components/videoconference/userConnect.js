@@ -8,7 +8,7 @@ const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
         reconnection: true,
     });
     const myPeer = new Peer();
-
+    console.log(videoStream);
     const videoGrid = document.getElementById("video-grid");
     const myVideo = document.createElement("video");
     myVideo.classList.add("myVideo");
@@ -46,14 +46,16 @@ const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
 
     const userInfo = async (userId) => {
         try {
-            const userInfo = await findUser(userId).then((response) =>
-                response.json()
-            );
-            console.log(userInfo.userName);
+            const userInfo = await findUser(userId)
+                .then((response) => response.json())
+                .catch((err) => {
+                    console.log("fetch ошибка ", err);
+                });
+
+            return userInfo;
         } catch (error) {}
     };
     videoStream.then((stream) => {
-        console.log(1);
         addVideoStream(myVideo, stream); // Display our video to ourselves
 
         myPeer.on("call", async (call) => {
@@ -63,8 +65,7 @@ const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
             console.log(222);
             const video = document.createElement("video"); // Create a video tag for them
             video.id = call.peer;
-            //
-            userInfo(call.peer);
+
             call.on("stream", (userVideoStream) => {
                 // When we recieve their stream
                 console.log(2);
@@ -99,7 +100,7 @@ const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
         console.log(33);
         const video = document.createElement("video");
         video.id = userId;
-        userInfo(userId);
+
         call.on("stream", (userVideoStream) => {
             if (screen === "video") {
                 console.log(3);
@@ -124,6 +125,8 @@ const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
                 video.play();
                 videoGrid.append(video);
             });
+            const data = await userInfo(userId);
+            console.log(data);
         }
     }
 };
