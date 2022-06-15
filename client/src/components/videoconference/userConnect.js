@@ -3,12 +3,11 @@ import Peer from "peerjs";
 
 const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
     // const { request } = useHttp();
-
+    console.log(videoStream);
     const socket = io("http://localhost:5000", {
         reconnection: true,
     });
     const myPeer = new Peer();
-    console.log(videoStream);
     const videoGrid = document.getElementById("video-grid");
     const myVideo = document.createElement("video");
     myVideo.classList.add("myVideo");
@@ -55,35 +54,52 @@ const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
             return userInfo;
         } catch (error) {}
     };
-    videoStream.then((stream) => {
-        addVideoStream(myVideo, stream); // Display our video to ourselves
+    if (screen === "screen") {
+        addVideoStream(myVideo, videoStream); // Display our video to ourselves
 
         myPeer.on("call", async (call) => {
-            console.log(22);
             // When we join someone's room we will receive a call from them
-            call.answer(stream); // Stream them our video/audio
-            console.log(222);
+            call.answer(videoStream); // Stream them our video/audio
+
             const video = document.createElement("video"); // Create a video tag for them
             video.id = call.peer;
 
             call.on("stream", (userVideoStream) => {
                 // When we recieve their stream
-                console.log(2);
+
                 addVideoStream(video, userVideoStream, call.peer); // Display their video to ourselves
             });
         });
+    } else {
+        videoStream.then((stream) => {
+            addVideoStream(myVideo, stream); // Display our video to ourselves
 
-        socket.on("user-connected", (userId) => {
-            // If a new user connect
+            myPeer.on("call", async (call) => {
+                // When we join someone's room we will receive a call from them
+                call.answer(stream); // Stream them our video/audio
 
-            connectToNewUser(userId, stream);
+                const video = document.createElement("video"); // Create a video tag for them
+                video.id = call.peer;
+
+                call.on("stream", (userVideoStream) => {
+                    // When we recieve their stream
+
+                    addVideoStream(video, userVideoStream, call.peer); // Display their video to ourselves
+                });
+            });
+
+            socket.on("user-connected", (userId) => {
+                // If a new user connect
+
+                connectToNewUser(userId, stream);
+            });
+            socket.on("user-disconnected", (userId) => {
+                // If a new user disconnect
+
+                disconnectToNewUser(userId, stream);
+            });
         });
-        socket.on("user-disconnected", (userId) => {
-            // If a new user disconnect
-
-            disconnectToNewUser(userId, stream);
-        });
-    });
+    }
 
     myPeer.on("open", (id) => {
         // When we first open the app, have us join a room
@@ -97,13 +113,12 @@ const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
         // This runs when someone joins our room
         const call = myPeer.call(userId, stream); // Call the user who just joined
         // Add their video
-        console.log(33);
+
         const video = document.createElement("video");
         video.id = userId;
 
         call.on("stream", (userVideoStream) => {
             if (screen === "video") {
-                console.log(3);
                 addVideoStream(video, userVideoStream, userId);
 
                 videoGrid.appendChild(video);

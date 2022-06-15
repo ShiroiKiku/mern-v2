@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+
 import userConnect from "../components/videoconference/userConnect";
 import "../style/videoconference.css";
 
@@ -6,11 +7,12 @@ const VideoСonferencePage = () => {
     const [ROOM_ID, setROOM_ID] = useState(null);
 
     const [screenId, setScreenId] = useState(null);
-    const [screenReady, setScreenReady] = useState(null);
+
     const [form, setForm] = useState({
         userName: "",
         orgName: "",
     });
+    const [vi, setVi] = useState(null);
     const changeHandler = (event) => {
         setForm({ ...form, [event.target.name]: event.target.value });
     };
@@ -23,7 +25,6 @@ const VideoСonferencePage = () => {
         const response = await fetch("/api/videochat");
         const data = await response.json();
         setScreenId(data);
-        console.log(data);
     };
     useEffect(() => {
         if (ROOM_ID) {
@@ -40,47 +41,28 @@ const VideoСonferencePage = () => {
             );
         }
     }, [ROOM_ID]);
+
     useEffect(() => {
-        if (screenReady !== null) {
-            console.log(screenReady);
-            userConnect(
-                screenId,
-                screenReady,
-                "screen",
-                form.userName,
-                form.orgName
-            );
+        if (vi) {
+            userConnect(ROOM_ID, vi, "screen", form.userName, form.orgName);
         }
-    }, [screenReady]);
+    }, [vi]);
     useEffect(() => {
         if (screenId) {
-            async function startCapture() {
-                let captureStream = null;
-
-                try {
-                    captureStream =
-                        await navigator.mediaDevices.getDisplayMedia({
-                            video: { width: 1280, height: 720 },
-                            audio: true,
-                        });
-                } catch (err) {
-                    console.error("Error: " + err);
-                }
-                return captureStream;
-            }
-            // const ready = async () => {
-            //     const videoScreen = navigator.mediaDevices.getDisplayMedia({
-            //         video: { width: 1280, height: 720 },
-            //         audio: true,
-            //     });
-            //     return await videoScreen;
-            // };
-
-            startCapture().then((result) => {
-                setScreenReady(startCapture());
-            });
+            screenCapture();
         }
     }, [screenId]);
+
+    const screenCapture = async () => {
+        await navigator.mediaDevices
+            .getDisplayMedia({
+                video: { width: 1280, height: 720 },
+                audio: true,
+            })
+            .then((stream) => {
+                return setVi(stream);
+            });
+    };
 
     return (
         <>
