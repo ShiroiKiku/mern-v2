@@ -2,11 +2,10 @@ import io from "socket.io-client";
 import Peer from "peerjs";
 
 const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
-    // const { request } = useHttp();
-    console.log(videoStream);
     const socket = io("http://localhost:5000", {
         reconnection: true,
     });
+    console.log(videoStream);
     const myPeer = new Peer();
     const videoGrid = document.getElementById("video-grid");
     const myVideo = document.createElement("video");
@@ -56,7 +55,7 @@ const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
     };
     if (screen === "screen") {
         addVideoStream(myVideo, videoStream); // Display our video to ourselves
-
+        console.log(videoStream);
         myPeer.on("call", async (call) => {
             // When we join someone's room we will receive a call from them
             call.answer(videoStream); // Stream them our video/audio
@@ -66,14 +65,23 @@ const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
 
             call.on("stream", (userVideoStream) => {
                 // When we recieve their stream
-
                 addVideoStream(video, userVideoStream, call.peer); // Display their video to ourselves
             });
+            userConnect.callClose = () => {
+                call.close();
+            };
+        });
+        socket.on("user-connected", (userId) => {
+            // If a new user connect
+
+            connectToNewUser(userId, videoStream);
         });
     } else {
         videoStream.then((stream) => {
             addVideoStream(myVideo, stream); // Display our video to ourselves
+            stream.getAudioTracks().enable = false;
 
+            console.log(stream);
             myPeer.on("call", async (call) => {
                 // When we join someone's room we will receive a call from them
                 call.answer(stream); // Stream them our video/audio

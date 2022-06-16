@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import closeScreenConn from "../components/videoconference/closeScreenConn";
 import userConnect from "../components/videoconference/userConnect";
 import "../style/videoconference.css";
 
@@ -13,6 +13,7 @@ const VideoСonferencePage = () => {
         orgName: "",
     });
     const [vi, setVi] = useState(null);
+
     const changeHandler = (event) => {
         setForm({ ...form, [event.target.name]: event.target.value });
     };
@@ -32,6 +33,7 @@ const VideoСonferencePage = () => {
                 video: { width: 854, height: 480 },
                 audio: true,
             });
+
             userConnect(
                 ROOM_ID,
                 videoStream,
@@ -62,6 +64,10 @@ const VideoСonferencePage = () => {
             .then((stream) => {
                 return setVi(stream);
             });
+    };
+
+    const closeConn = () => {
+        closeScreenConn();
     };
 
     return (
