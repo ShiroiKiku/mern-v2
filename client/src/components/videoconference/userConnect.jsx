@@ -58,7 +58,6 @@ const userConnect = (ROOM_ID, videoStream, userName, orgName) => {
     addVideoStream(myVideo, videoStream); // Display our video to ourselves
     videoStream.getAudioTracks().enable = false;
 
-    console.log(videoStream);
     myPeer.on("call", async (call) => {
         // When we join someone's room we will receive a call from them
         call.answer(videoStream); // Stream them our video/audio
@@ -80,7 +79,7 @@ const userConnect = (ROOM_ID, videoStream, userName, orgName) => {
     });
     socket.on("user-disconnected", (userId) => {
         // If a new user disconnect
-
+        console.log("user disconnect ", userId);
         disconnectToNewUser(userId, videoStream);
     });
 
@@ -107,7 +106,7 @@ const userConnect = (ROOM_ID, videoStream, userName, orgName) => {
             videoGrid.appendChild(video);
         });
     }
-    function disconnectToNewUser(userId, stream) {
+    function disconnectToNewUser(userId) {
         // This runs when someone joins our room
         document.getElementById(userId).remove();
         if (document.getElementById("image" + userId)) {
@@ -146,7 +145,7 @@ const userConnect = (ROOM_ID, videoStream, userName, orgName) => {
             videoGrid.append(videoImage);
         }
         const data = await userInfo(userId);
-        console.log(data);
+        // console.log(data);
     }
 };
 

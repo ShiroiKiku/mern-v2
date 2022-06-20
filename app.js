@@ -41,7 +41,7 @@ async function start() {
         process.exit(1);
     }
 }
-
+0;
 //node-media-server
 
 var nms = new NodeMediaServer(configNMS);
@@ -58,23 +58,22 @@ io.on("connection", (socket) => {
         socket.join(roomId);
         //Данные о пользователе отправляются другим пользователям
         socket.broadcast.emit("user-connected", userId);
-        socket.on("connect-screen", (userIdScreen) => {
-            console.log(userIdScreen);
-            socket.broadcast.emit("connect-screen-on", userIdScreen);
-        });
-        // Пользователь отключился
         socket.on("disconnect", async () => {
             socket.broadcast.emit("user-disconnected", userId);
+            console.log("user-disconnected", userId);
             // socket.emit("user-disconnected", userId);
             await userDelite(userId);
-            // fetch("localhost:5000/api/videochatdata/deldata"),
-            //     {
-            //         method: "POST",
-            //         body: JSON.stringify(userId),
-            //         headers: { "Content-Type": "application/json" },
-            //     };
         });
     });
+    socket.on("connect-screen", (userIdScreen) => {
+        socket.broadcast.emit("connect-screen-on", userIdScreen);
+    });
+    // Пользователь отключился
+
+    // socket.on("disc", async (userId) => {
+    //     socket.broadcast.emit("user-disconnected", userId);
+    //     await userDelite(userId);
+    // });
 });
 
 const userDelite = async (userId) => {

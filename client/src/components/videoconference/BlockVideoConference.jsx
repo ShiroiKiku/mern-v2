@@ -16,6 +16,7 @@ const BlockVideoConference = (props) => {
     const [videoCam, setVideoCam] = useState(null);
     const [micBtnText, setMicBtnText] = useState("Выключить микрофон");
     const [videoBtnText, setVideoBtnText] = useState("Выключить камеру");
+
     const connectVideoChat = async () => {
         setConnectState(true);
         navigator.mediaDevices
@@ -23,7 +24,6 @@ const BlockVideoConference = (props) => {
             .then((stream) => gotDevices(stream));
     };
     async function gotDevices(deviceInfo) {
-        console.log(deviceInfo);
         var videoDevise = 0;
         var audioDevise = 0;
         var video = null;
@@ -53,7 +53,7 @@ const BlockVideoConference = (props) => {
             video: video,
             audio: audio,
         });
-        console.log(videoDevise);
+
         setVideoCam(videoStream);
         userConnect(props.ROOM_ID, videoStream, props.userName, props.orgName);
     }
@@ -107,22 +107,15 @@ const BlockVideoConference = (props) => {
             videoCam.getVideoTracks()[0].enabled = true;
         }
     };
+    const socket = io("http://localhost:5000");
     const videoScreenStop = () => {
-        // videoScreen.getTracks().forEach(function (track) {
-        //     if (track.readyState === "live") {
-        //         track.stop();
-        //     }
-        // });
-        // screenDisconnect(screenId, screenConnectId);
-        console.log(screenConnectId);
+        //  socket.emit("disc", screenConnectId);
+        socket.emit("disc", screenConnectId);
+        io.sockets.connected[screenConnectId].disconnect();
     };
     //
 
     const screenConnect = (ROOM_ID, videoStream, userName, orgName) => {
-        const socket = io("http://localhost:5000", {
-            reconnection: true,
-        });
-
         const myPeer = new Peer();
 
         const myVideo = document.createElement("video");
