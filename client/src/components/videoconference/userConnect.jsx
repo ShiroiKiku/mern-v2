@@ -1,11 +1,12 @@
 import io from "socket.io-client";
 import Peer from "peerjs";
+import novideo from "../images/novideo.jpg";
 
-const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
+const userConnect = (ROOM_ID, videoStream, userName, orgName) => {
     const socket = io("http://localhost:5000", {
         reconnection: true,
     });
-    console.log(videoStream);
+
     const myPeer = new Peer();
     const videoGrid = document.getElementById("video-grid");
     const myVideo = document.createElement("video");
@@ -18,7 +19,7 @@ const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
                 orgName: orgName,
                 roomId: ROOM_ID,
                 userId: id,
-                videoType: screen,
+                videoType: "video",
             };
 
             fetch("/api/videochatdata/savedata", {
@@ -53,61 +54,35 @@ const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
             return userInfo;
         } catch (error) {}
     };
-    if (screen === "screen") {
-        addVideoStream(myVideo, videoStream); // Display our video to ourselves
-        console.log(videoStream);
-        myPeer.on("call", async (call) => {
-            // When we join someone's room we will receive a call from them
-            call.answer(videoStream); // Stream them our video/audio
 
-            const video = document.createElement("video"); // Create a video tag for them
-            video.id = call.peer;
+    addVideoStream(myVideo, videoStream); // Display our video to ourselves
+    videoStream.getAudioTracks().enable = false;
 
-            call.on("stream", (userVideoStream) => {
-                // When we recieve their stream
-                addVideoStream(video, userVideoStream, call.peer); // Display their video to ourselves
-            });
-            userConnect.callClose = () => {
-                call.close();
-            };
+    console.log(videoStream);
+    myPeer.on("call", async (call) => {
+        // When we join someone's room we will receive a call from them
+        call.answer(videoStream); // Stream them our video/audio
+
+        const video = document.createElement("video"); // Create a video tag for them
+        video.id = call.peer;
+
+        call.on("stream", (userVideoStream) => {
+            // When we recieve their stream
+
+            addVideoStream(video, userVideoStream, call.peer); // Display their video to ourselves
         });
-        socket.on("user-connected", (userId) => {
-            // If a new user connect
+    });
 
-            connectToNewUser(userId, videoStream);
-        });
-    } else {
-        videoStream.then((stream) => {
-            addVideoStream(myVideo, stream); // Display our video to ourselves
-            stream.getAudioTracks().enable = false;
+    socket.on("user-connected", (userId) => {
+        // If a new user connect
 
-            console.log(stream);
-            myPeer.on("call", async (call) => {
-                // When we join someone's room we will receive a call from them
-                call.answer(stream); // Stream them our video/audio
+        connectToNewUser(userId, videoStream);
+    });
+    socket.on("user-disconnected", (userId) => {
+        // If a new user disconnect
 
-                const video = document.createElement("video"); // Create a video tag for them
-                video.id = call.peer;
-
-                call.on("stream", (userVideoStream) => {
-                    // When we recieve their stream
-
-                    addVideoStream(video, userVideoStream, call.peer); // Display their video to ourselves
-                });
-            });
-
-            socket.on("user-connected", (userId) => {
-                // If a new user connect
-
-                connectToNewUser(userId, stream);
-            });
-            socket.on("user-disconnected", (userId) => {
-                // If a new user disconnect
-
-                disconnectToNewUser(userId, stream);
-            });
-        });
-    }
+        disconnectToNewUser(userId, videoStream);
+    });
 
     myPeer.on("open", (id) => {
         // When we first open the app, have us join a room
@@ -119,6 +94,7 @@ const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
 
     async function connectToNewUser(userId, stream) {
         // This runs when someone joins our room
+
         const call = myPeer.call(userId, stream); // Call the user who just joined
         // Add their video
 
@@ -126,19 +102,22 @@ const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
         video.id = userId;
 
         call.on("stream", (userVideoStream) => {
-            if (screen === "video") {
-                addVideoStream(video, userVideoStream, userId);
+            addVideoStream(video, userVideoStream, userId);
 
-                videoGrid.appendChild(video);
-            }
+            videoGrid.appendChild(video);
         });
     }
     function disconnectToNewUser(userId, stream) {
         // This runs when someone joins our room
         document.getElementById(userId).remove();
+        if (document.getElementById("image" + userId)) {
+            document.getElementById("image" + userId).remove();
+        }
     }
     async function addVideoStream(video, stream, userId) {
-        if (screen === "video") {
+        const boolVideo = stream.getVideoTracks();
+
+        if (boolVideo.length === 1) {
             video.srcObject = stream;
             video.addEventListener("loadedmetadata", () => {
                 // Play the video as it loads
@@ -148,9 +127,26 @@ const userConnect = (ROOM_ID, videoStream, screen, userName, orgName) => {
                 video.play();
                 videoGrid.append(video);
             });
-            const data = await userInfo(userId);
-            console.log(data);
+        } else {
+            video.srcObject = stream;
+            video.classList.add("noVideo");
+            video.addEventListener("loadedmetadata", () => {
+                // Play the video as it loads
+                if (video.classList.contains("myVideo")) {
+                    video.muted = true;
+                }
+                video.play();
+
+                videoGrid.append(video);
+            });
+            const videoImage = document.createElement("IMG");
+            videoImage.src = novideo;
+            videoImage.id = "image" + userId;
+
+            videoGrid.append(videoImage);
         }
+        const data = await userInfo(userId);
+        console.log(data);
     }
 };
 

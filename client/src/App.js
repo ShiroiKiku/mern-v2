@@ -8,7 +8,7 @@ import { Navbar } from "./components/Navbar";
 import { Loader } from "./components/Loader";
 import "materialize-css";
 import Footer from "./components/Footer";
-
+import "../src/style/style.css";
 // import "bootstrap";
 
 function App() {

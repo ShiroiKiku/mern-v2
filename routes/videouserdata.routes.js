@@ -19,15 +19,15 @@ router.post("/savedata", async (req, res) => {
         await userData.save();
         console.log(`пользователь ${userName} сохранен в базу`);
     } catch (e) {
-        console.log("ошибка", e);
+        console.log("ошибка добавления", e);
     }
 });
 router.post("/deldata", async (req, res) => {
     try {
         const { userId } = req.body;
-        await VideoChat.findOneAndRemove({ userId: userId });
+        await VideoChat.findOneAndDelete({ userId: userId });
     } catch (e) {
-        console.log("ошибка", e);
+        console.log("ошибка удаления", e);
     }
 });
 router.post("/finduser", async (req, res) => {
@@ -37,7 +37,7 @@ router.post("/finduser", async (req, res) => {
 
         res.json(user);
     } catch (e) {
-        console.log("ошибка", e);
+        console.log("ошибка поиска", e);
     }
 });
 module.exports = router;

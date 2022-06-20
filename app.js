@@ -45,7 +45,7 @@ async function start() {
 //node-media-server
 
 var nms = new NodeMediaServer(configNMS);
-nms.run();
+// nms.run();
 const server = app.listen(PORT, () =>
     console.log(`App listening on port ${PORT}!`)
 );

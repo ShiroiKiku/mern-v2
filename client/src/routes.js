@@ -54,6 +54,9 @@ export const useRoutes = (isAuthenticated) => {
             <Route path='/stream'>
                 <VideoPlayer />
             </Route>
+            <Route path='/videochat'>
+                <VideoСonferencePage />
+            </Route>
             <PagesRoutes />
             <Redirect to='/create' />
         </Switch>

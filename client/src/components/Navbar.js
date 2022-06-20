@@ -31,30 +31,30 @@ export const Navbar = () => {
         //     linkName: "Ссылки",
         //     dropList: [],
         // },
-        {
-            _id: 2,
-            linkUrl: "stream2",
-            linkName: "дроп1",
-            dropList: [
-                { _id: 1, dropUrl: "stream1", dropLinkName: "Стрим1" },
-                { _id: 2, dropUrl: "stream2", dropLinkName: "Стрим2" },
-                { _id: 3, dropUrl: "stream3", dropLinkName: "Стрим3" },
-            ],
-        },
-        {
-            _id: 3,
-            linkUrl: "stream4",
-            linkName: "дроп2",
-            dropList: [
-                { _id: 1, dropUrl: "stream1", dropLinkName: "Стрим5" },
-                { _id: 2, dropUrl: "stream2", dropLinkName: "Стрим6" },
-                { _id: 3, dropUrl: "stream3", dropLinkName: "Стрим7" },
-            ],
-        },
+        // {
+        //     _id: 2,
+        //     linkUrl: "stream2",
+        //     linkName: "дроп1",
+        //     dropList: [
+        //         { _id: 1, dropUrl: "stream1", dropLinkName: "Стрим1" },
+        //         { _id: 2, dropUrl: "stream2", dropLinkName: "Стрим2" },
+        //         { _id: 3, dropUrl: "stream3", dropLinkName: "Стрим3" },
+        //     ],
+        // },
+        // {
+        //     _id: 3,
+        //     linkUrl: "stream4",
+        //     linkName: "дроп2",
+        //     dropList: [
+        //         { _id: 1, dropUrl: "stream1", dropLinkName: "Стрим5" },
+        //         { _id: 2, dropUrl: "stream2", dropLinkName: "Стрим6" },
+        //         { _id: 3, dropUrl: "stream3", dropLinkName: "Стрим7" },
+        //     ],
+        // },
         {
             _id: 4,
             linkUrl: "videochat",
-            linkName: "videochat",
+            linkName: "Видеоконференция",
             dropList: [],
         },
 
@@ -67,15 +67,15 @@ export const Navbar = () => {
         {
             _id: 6,
             linkUrl: "createlink",
-            linkName: "создание ссылки",
+            linkName: "Создание страницы",
             dropList: [],
         },
     ];
 
     return (
-        <nav className='blue darken-2'>
+        <nav className='blue-grey darken-2'>
             <div className='nav-wrapper'>
-                <span className='brand-logo'>Suite test</span>
+                <span className='brand-logo'>Дипломное приложение</span>
                 <ul id='nav-mobile' className='right hide-on-med-and-down'>
                     {navbarLinks.map((navLink) => {
                         if (navLink.dropList.length === 0) {

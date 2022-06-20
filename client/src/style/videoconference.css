@@ -14,3 +14,11 @@
 .dem_open {
     display: block;
 }
+
+.video-grid > img {
+    width: 33%;
+    margin: 10px;
+}
+.noVideo {
+    display: none !important;
+}
