@@ -60,20 +60,15 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("user-connected", userId);
         socket.on("disconnect", async () => {
             socket.broadcast.emit("user-disconnected", userId);
-            console.log("user-disconnected", userId);
-            // socket.emit("user-disconnected", userId);
-            await userDelite(userId);
+            userDelite(userId);
         });
     });
-    socket.on("connect-screen", (userIdScreen) => {
-        socket.broadcast.emit("connect-screen-on", userIdScreen);
-    });
-    // Пользователь отключился
 
-    // socket.on("disc", async (userId) => {
-    //     socket.broadcast.emit("user-disconnected", userId);
-    //     await userDelite(userId);
-    // });
+    socket.on("disc", (userId) => {
+        socket.broadcast.emit("user-disconnected", userId);
+        socket.emit("user-disconnected", userId);
+        userDelite(userId);
+    });
 });
 
 const userDelite = async (userId) => {

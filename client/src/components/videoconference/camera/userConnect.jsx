@@ -1,6 +1,6 @@
 import io from "socket.io-client";
 import Peer from "peerjs";
-import novideo from "../images/novideo.jpg";
+import novideo from "../../images/novideo.jpg";
 
 const userConnect = (ROOM_ID, videoStream, userName, orgName) => {
     const socket = io("http://localhost:5000", {
@@ -8,6 +8,7 @@ const userConnect = (ROOM_ID, videoStream, userName, orgName) => {
     });
 
     const myPeer = new Peer();
+
     const videoGrid = document.getElementById("video-grid");
     const myVideo = document.createElement("video");
     myVideo.classList.add("myVideo");
@@ -89,6 +90,7 @@ const userConnect = (ROOM_ID, videoStream, userName, orgName) => {
         saveHandler(id);
         // ret = id;
         socket.emit("join-room", ROOM_ID, id);
+        return id;
     });
 
     async function connectToNewUser(userId, stream) {
@@ -145,7 +147,6 @@ const userConnect = (ROOM_ID, videoStream, userName, orgName) => {
             videoGrid.append(videoImage);
         }
         const data = await userInfo(userId);
-        // console.log(data);
     }
 };
 

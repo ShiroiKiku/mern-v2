@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
-import userConnect from "./userConnect";
-import screenConnect from "./screenConnect";
+import userConnect from "./camera/userConnect";
 import MyButton from "../UI/button/MyButton";
-import screenDisconnect from "./screenDisconnect";
+import ScreenSharing from "./screen/ScreenSharing";
 
 import io from "socket.io-client";
 import Peer from "peerjs";
 
+import novideo from "../images/novideo.jpg";
+
+import BlockCamera from "./camera/BlockCamera";
+
 const BlockVideoConference = (props) => {
-    const [screenId, setScreenId] = useState(null);
     const [connectState, setConnectState] = useState(false);
-    const [screenActiveState, setScreenActiveState] = useState(false);
-    const [videoScreen, setVideoScreen] = useState(null);
-    const [screenConnectId, setScreenConnectId] = useState(null);
     const [videoCam, setVideoCam] = useState(null);
     const [micBtnText, setMicBtnText] = useState("Выключить микрофон");
     const [videoBtnText, setVideoBtnText] = useState("Выключить камеру");
@@ -57,37 +56,6 @@ const BlockVideoConference = (props) => {
         setVideoCam(videoStream);
         userConnect(props.ROOM_ID, videoStream, props.userName, props.orgName);
     }
-    const screenCapture = async () => {
-        await navigator.mediaDevices
-            .getDisplayMedia({
-                video: { width: 1280, height: 720 },
-                audio: true,
-            })
-            .then((stream) => {
-                setVideoScreen(stream);
-
-                screenConnect(
-                    props.ROOM_ID,
-                    stream,
-                    props.userName,
-                    props.orgName
-                );
-            });
-
-        setScreenActiveState(true);
-    };
-
-    useEffect(() => {
-        if (screenId) {
-            screenCapture();
-        }
-    }, [screenId]);
-
-    const getScreenId = async () => {
-        const response = await fetch("/api/videochat");
-        const data = await response.json();
-        setScreenId(data);
-    };
 
     const microMute = () => {
         if (videoCam.getAudioTracks()[0].enabled === true) {
@@ -107,17 +75,17 @@ const BlockVideoConference = (props) => {
             videoCam.getVideoTracks()[0].enabled = true;
         }
     };
-    const socket = io("http://localhost:5000");
-    const videoScreenStop = () => {
-        //  socket.emit("disc", screenConnectId);
-        socket.emit("disc", screenConnectId);
-        io.sockets.connected[screenConnectId].disconnect();
-    };
+
     //
 
-    const screenConnect = (ROOM_ID, videoStream, userName, orgName) => {
+    const userConnect = (ROOM_ID, videoStream, userName, orgName) => {
+        const socket = io("http://localhost:5000", {
+            reconnection: true,
+        });
+
         const myPeer = new Peer();
 
+        const videoGrid = document.getElementById("video-grid");
         const myVideo = document.createElement("video");
         myVideo.classList.add("myVideo");
 
@@ -128,7 +96,7 @@ const BlockVideoConference = (props) => {
                     orgName: orgName,
                     roomId: ROOM_ID,
                     userId: id,
-                    videoType: "screen",
+                    videoType: "video",
                 };
 
                 fetch("/api/videochatdata/savedata", {
@@ -140,6 +108,32 @@ const BlockVideoConference = (props) => {
                 console.log(e);
             }
         };
+        const findUser = async (id) => {
+            try {
+                return await fetch("/api/videochatdata/finduser", {
+                    method: "POST",
+                    body: JSON.stringify({ userId: id }),
+                    headers: { "Content-Type": "application/json" },
+                });
+            } catch (e) {
+                console.log(e);
+            }
+        };
+
+        const userInfo = async (userId) => {
+            try {
+                const userInfo = await findUser(userId)
+                    .then((response) => response.json())
+                    .catch((err) => {
+                        console.log("fetch ошибка ", err);
+                    });
+
+                return userInfo;
+            } catch (error) {}
+        };
+
+        addVideoStream(myVideo, videoStream); // Display our video to ourselves
+        videoStream.getAudioTracks().enable = false;
 
         myPeer.on("call", async (call) => {
             // When we join someone's room we will receive a call from them
@@ -150,35 +144,95 @@ const BlockVideoConference = (props) => {
 
             call.on("stream", (userVideoStream) => {
                 // When we recieve their stream
+
+                addVideoStream(video, userVideoStream, call.peer); // Display their video to ourselves
             });
         });
+
         socket.on("user-connected", (userId) => {
             // If a new user connect
 
             connectToNewUser(userId, videoStream);
+        });
+        socket.on("user-disconnected", (userId) => {
+            // If a new user disconnect
+            console.log("user disconnect ", userId);
+            disconnectToNewUser(userId, videoStream);
         });
 
         myPeer.on("open", (id) => {
             // When we first open the app, have us join a room
 
             saveHandler(id);
-            setScreenConnectId(id);
             // ret = id;
             socket.emit("join-room", ROOM_ID, id);
+            return id;
         });
 
         async function connectToNewUser(userId, stream) {
             // This runs when someone joins our room
+
             const call = myPeer.call(userId, stream); // Call the user who just joined
             // Add their video
 
             const video = document.createElement("video");
             video.id = userId;
 
-            call.on("stream", (userVideoStream) => {});
+            call.on("stream", (userVideoStream) => {
+                addVideoStream(video, userVideoStream, userId);
+
+                videoGrid.appendChild(video);
+            });
+        }
+        function disconnectToNewUser(userId) {
+            // This runs when someone joins our room
+            document.getElementById(userId).remove();
+            if (document.getElementById("image" + userId)) {
+                document.getElementById("image" + userId).remove();
+            }
+        }
+        async function addVideoStream(video, stream, userId) {
+            const boolVideo = stream.getVideoTracks();
+
+            if (boolVideo.length === 1) {
+                video.srcObject = stream;
+                video.addEventListener("loadedmetadata", () => {
+                    // Play the video as it loads
+                    if (video.classList.contains("myVideo")) {
+                        video.muted = true;
+                    }
+                    video.play();
+                    videoGrid.append(video);
+                });
+            } else {
+                video.srcObject = stream;
+                video.classList.add("noVideo");
+                video.addEventListener("loadedmetadata", () => {
+                    // Play the video as it loads
+                    if (video.classList.contains("myVideo")) {
+                        video.muted = true;
+                    }
+                    video.play();
+
+                    videoGrid.append(video);
+                });
+                const videoImage = document.createElement("IMG");
+                videoImage.src = novideo;
+                videoImage.id = "image" + userId;
+
+                videoGrid.append(videoImage);
+            }
+            const data = await userInfo(userId);
         }
     };
-    //
+    const userVideos = [
+        {
+            socketId: 4,
+            userName: "Имя",
+            orgName: "Огранизация",
+            video: [],
+        },
+    ];
     return (
         <>
             <div className='row screen-btn center'>
@@ -192,6 +246,7 @@ const BlockVideoConference = (props) => {
                     </>
                 ) : (
                     <>
+                        <ScreenSharing props={props} />
                         <MyButton onClick={connectVideoChat}>
                             Отключиться от конференции
                         </MyButton>
@@ -199,16 +254,20 @@ const BlockVideoConference = (props) => {
                         <MyButton onClick={videoMute}>{videoBtnText}</MyButton>
                     </>
                 )}
-                {!screenActiveState && connectState && (
-                    <MyButton onClick={getScreenId}>Показать экран</MyButton>
-                )}
-                {screenActiveState && connectState && (
-                    <MyButton onClick={videoScreenStop}>
-                        Прекратить демонстрацию
-                    </MyButton>
-                )}
             </div>
-            <div id='video-grid' className=' video-grid'></div>
+
+            <div id='video-grid' className=' video-grid'>
+                {userVideos.map((userVideo) => {
+                    if (userVideos.length !== 0) {
+                        return (
+                            <BlockCamera
+                                key={userVideo.dropUrl}
+                                props={userVideo}
+                            />
+                        );
+                    }
+                })}
+            </div>
         </>
     );
 };
