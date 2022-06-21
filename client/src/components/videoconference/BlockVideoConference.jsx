@@ -15,7 +15,15 @@ const BlockVideoConference = (props) => {
     const [videoCam, setVideoCam] = useState(null);
     const [micBtnText, setMicBtnText] = useState("Выключить микрофон");
     const [videoBtnText, setVideoBtnText] = useState("Выключить камеру");
-
+    const [usersVideo, setUsersVideo] = useState([
+        {
+            userId: "my-video-id",
+            userName: props.userName,
+            orgName: props.orgName,
+            video: "video",
+        },
+    ]);
+    const [usersIdEquals, setUsersIdEquals] = useState("my-video-id");
     const connectVideoChat = async () => {
         setConnectState(true);
         navigator.mediaDevices
@@ -223,16 +231,40 @@ const BlockVideoConference = (props) => {
                 videoGrid.append(videoImage);
             }
             const data = await userInfo(userId);
+            if (!video.classList.contains("myVideo")) {
+                const newUserElement = {
+                    userId: userId,
+                    userName: data.userName,
+                    orgName: data.orgName,
+                    video: " video",
+                };
+                if (!usersIdEquals.includes(userId)) {
+                    console.log(usersIdEquals.includes(userId));
+                    setUsersIdEquals((oldArray) => [...oldArray, userId]);
+
+                    setUsersVideo((oldArray) => [...oldArray, newUserElement]);
+                }
+            }
+            //  else
+            //     setUsersVideo({
+            //         userId: data.userId,
+            //         userName: data.userName,
+            //         orgName: data.orgName,
+            //         video: video,
+            //     });
         }
     };
-    const userVideos = [
-        {
-            socketId: 4,
-            userName: "Имя",
-            orgName: "Огранизация",
-            video: [],
-        },
-    ];
+    useEffect(() => {
+        console.log(usersVideo);
+    }, [usersVideo]);
+    // const userVideos = [
+    //     {
+    //         socketId: "23459-2u40923948y23894",
+    //         userName: "Имя",
+    //         orgName: "Огранизация",
+    //         video: [],
+    //     },
+    // ];
     return (
         <>
             <div className='row screen-btn center'>
@@ -257,12 +289,14 @@ const BlockVideoConference = (props) => {
             </div>
 
             <div id='video-grid' className=' video-grid'>
-                {userVideos.map((userVideo) => {
-                    if (userVideos.length !== 0) {
+                {usersVideo.map((userVideo) => {
+                    if (userVideo.length !== 0) {
                         return (
                             <BlockCamera
-                                key={userVideo.dropUrl}
-                                props={userVideo}
+                                key={userVideo.userId}
+                                userName={userVideo.userName}
+                                orgName={userVideo.orgName}
+                                userId={userVideo.userId}
                             />
                         );
                     }
