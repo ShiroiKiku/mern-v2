@@ -1,10 +1,3 @@
-.video-grid {
-}
-.video-grid > video {
-    width: 33%;
-    margin: 10px;
-}
-
 .myVideo {
     border: 3px #00b344 solid;
 }
@@ -15,10 +8,31 @@
     display: block;
 }
 
-.video-grid > img {
-    width: 33%;
-    margin: 10px;
-}
 .noVideo {
     display: none !important;
+}
+.video-wrapper > video {
+    width: 100%;
+    height: 100%;
+}
+.video-wrapper {
+    background-color: rgb(26, 26, 29);
+    margin: 5px;
+    border-radius: 5px;
+    padding: 0px;
+    position: relative;
+}
+.video-wrapper__user-info {
+    padding: 0px;
+    margin: 0px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+.video-wrapper__user-info > p {
+    margin: 0px;
+
+    padding: 0px;
+    text-shadow: 1px 1px 1px #fff;
+    font-weight: bold;
 }

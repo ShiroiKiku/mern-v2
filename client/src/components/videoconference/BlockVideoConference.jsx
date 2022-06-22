@@ -15,15 +15,8 @@ const BlockVideoConference = (props) => {
     const [videoCam, setVideoCam] = useState(null);
     const [micBtnText, setMicBtnText] = useState("Выключить микрофон");
     const [videoBtnText, setVideoBtnText] = useState("Выключить камеру");
-    const [usersVideo, setUsersVideo] = useState([
-        {
-            userId: "my-video-id",
-            userName: props.userName,
-            orgName: props.orgName,
-            video: "video",
-        },
-    ]);
-    const [usersIdEquals, setUsersIdEquals] = useState("my-video-id");
+    const [usersVideo, setUsersVideo] = useState([null]);
+    const usersIdEquals = [];
     const connectVideoChat = async () => {
         setConnectState(true);
         navigator.mediaDevices
@@ -116,29 +109,6 @@ const BlockVideoConference = (props) => {
                 console.log(e);
             }
         };
-        const findUser = async (id) => {
-            try {
-                return await fetch("/api/videochatdata/finduser", {
-                    method: "POST",
-                    body: JSON.stringify({ userId: id }),
-                    headers: { "Content-Type": "application/json" },
-                });
-            } catch (e) {
-                console.log(e);
-            }
-        };
-
-        const userInfo = async (userId) => {
-            try {
-                const userInfo = await findUser(userId)
-                    .then((response) => response.json())
-                    .catch((err) => {
-                        console.log("fetch ошибка ", err);
-                    });
-
-                return userInfo;
-            } catch (error) {}
-        };
 
         addVideoStream(myVideo, videoStream); // Display our video to ourselves
         videoStream.getAudioTracks().enable = false;
@@ -189,7 +159,7 @@ const BlockVideoConference = (props) => {
             call.on("stream", (userVideoStream) => {
                 addVideoStream(video, userVideoStream, userId);
 
-                videoGrid.appendChild(video);
+                // videoGrid.appendChild(video);
             });
         }
         function disconnectToNewUser(userId) {
@@ -204,14 +174,16 @@ const BlockVideoConference = (props) => {
 
             if (boolVideo.length === 1) {
                 video.srcObject = stream;
+
                 video.addEventListener("loadedmetadata", () => {
                     // Play the video as it loads
                     if (video.classList.contains("myVideo")) {
                         video.muted = true;
                     }
                     video.play();
-                    videoGrid.append(video);
+                    // videoGrid.append(video);
                 });
+                console.log(video);
             } else {
                 video.srcObject = stream;
                 video.classList.add("noVideo");
@@ -222,7 +194,7 @@ const BlockVideoConference = (props) => {
                     }
                     video.play();
 
-                    videoGrid.append(video);
+                    // videoGrid.append(video);
                 });
                 const videoImage = document.createElement("IMG");
                 videoImage.src = novideo;
@@ -230,73 +202,106 @@ const BlockVideoConference = (props) => {
 
                 videoGrid.append(videoImage);
             }
-            const data = await userInfo(userId);
-            if (!video.classList.contains("myVideo")) {
-                const newUserElement = {
-                    userId: userId,
-                    userName: data.userName,
-                    orgName: data.orgName,
-                    video: " video",
-                };
-                if (!usersIdEquals.includes(userId)) {
-                    console.log(usersIdEquals.includes(userId));
-                    setUsersIdEquals((oldArray) => [...oldArray, userId]);
 
-                    setUsersVideo((oldArray) => [...oldArray, newUserElement]);
-                }
+            if (!video.classList.contains("myVideo")) {
+                await userInfoReturn(userId, video);
+            } else {
+                await userInfoReturn("my-id", video);
             }
-            //  else
-            //     setUsersVideo({
-            //         userId: data.userId,
-            //         userName: data.userName,
-            //         orgName: data.orgName,
-            //         video: video,
-            //     });
         }
     };
-    useEffect(() => {
-        console.log(usersVideo);
-    }, [usersVideo]);
-    // const userVideos = [
-    //     {
-    //         socketId: "23459-2u40923948y23894",
-    //         userName: "Имя",
-    //         orgName: "Огранизация",
-    //         video: [],
-    //     },
-    // ];
+    // useEffect(() => {
+    //     console.log(usersIdEquals);
+    // }, [usersVideo);
+
+    const userInfoReturn = async (userId, stream) => {
+        const userData = await userInfo(userId);
+        const boolshit = usersIdEquals.includes(userId);
+        if (userId === "my-id") {
+            const newUserElement = {
+                userId: userId,
+                userName: props.userName,
+                orgName: props.orgName,
+                stream: stream,
+            };
+            if (!boolshit) {
+                usersIdEquals.push(userId);
+                setUsersVideo((oldArray) => [...oldArray, newUserElement]);
+            }
+        } else {
+            const newUserElement = {
+                userId: userId,
+                userName: userData.userName,
+                orgName: userData.orgName,
+                stream: stream,
+            };
+            if (!boolshit) {
+                usersIdEquals.push(userId);
+                setUsersVideo((oldArray) => [...oldArray, newUserElement]);
+            }
+        }
+    };
+    const findUser = async (id) => {
+        try {
+            return await fetch("/api/videochatdata/finduser", {
+                method: "POST",
+                body: JSON.stringify({ userId: id }),
+                headers: { "Content-Type": "application/json" },
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    };
+    const userInfo = async (userId) => {
+        try {
+            const userInfo = await findUser(userId)
+                .then((response) => response.json())
+                .catch((err) => {
+                    console.log("fetch ошибка ", err);
+                });
+
+            return userInfo;
+        } catch (error) {}
+    };
     return (
         <>
             <div className='row screen-btn center'>
-                {!connectState ? (
-                    <>
-                        {/* <ion-icon name='cloud-download-outline'></ion-icon> */}
-                        <MyButton onClick={connectVideoChat}>
-                            Присоединиться к видеоконференции c микрофоном и
-                            камерой
-                        </MyButton>
-                    </>
-                ) : (
-                    <>
-                        <ScreenSharing props={props} />
-                        <MyButton onClick={connectVideoChat}>
-                            Отключиться от конференции
-                        </MyButton>
-                        <MyButton onClick={microMute}>{micBtnText}</MyButton>
-                        <MyButton onClick={videoMute}>{videoBtnText}</MyButton>
-                    </>
-                )}
+                <div className='col s12'>
+                    {!connectState ? (
+                        <>
+                            {/* <ion-icon name='cloud-download-outline'></ion-icon> */}
+                            <MyButton onClick={connectVideoChat}>
+                                Присоединиться к видеоконференции c микрофоном и
+                                камерой
+                            </MyButton>
+                        </>
+                    ) : (
+                        <>
+                            <ScreenSharing props={props} />
+                            <MyButton onClick={connectVideoChat}>
+                                Отключиться от конференции
+                            </MyButton>
+                            <MyButton onClick={microMute}>
+                                {micBtnText}
+                            </MyButton>
+                            <MyButton onClick={videoMute}>
+                                {videoBtnText}
+                            </MyButton>
+                        </>
+                    )}
+                </div>
             </div>
 
-            <div id='video-grid' className=' video-grid'>
+            <div id='video-grid' className=' video-grid row'>
                 {usersVideo.map((userVideo) => {
-                    if (userVideo.length !== 0) {
+                    if (userVideo) {
                         return (
                             <BlockCamera
                                 key={userVideo.userId}
                                 userName={userVideo.userName}
                                 orgName={userVideo.orgName}
                                 userId={userVideo.userId}
+                                stream={userVideo.stream}
                             />
                         );
                     }

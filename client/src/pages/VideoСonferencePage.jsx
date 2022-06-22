@@ -30,7 +30,7 @@ const VideoСonferencePage = () => {
         }
     }, [form]);
     return (
-        <div>
+        <>
             {!ROOM_ID ? (
                 <div className='row '>
                     <DarkForm
@@ -79,7 +79,7 @@ const VideoСonferencePage = () => {
                     orgName={form.orgName}
                 />
             )}
-        </div>
+        </>
     );
 };
 
