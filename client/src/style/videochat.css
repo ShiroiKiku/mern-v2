@@ -1,0 +1,11 @@
+.video-grid {
+    width: 100%;
+    display: inline-flex;
+    padding: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+.open-video {
+    width: 800px;
+    border: 4px double rgb(20, 6, 37);
+}

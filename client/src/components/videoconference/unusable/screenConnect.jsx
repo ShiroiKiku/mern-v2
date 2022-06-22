@@ -6,6 +6,7 @@ const screenConnect = (ROOM_ID, videoStream, userName, orgName) => {
         reconnection: true,
     });
 
+    console.log(ROOM_ID, videoStream, userName, orgName);
     const myPeer = new Peer();
 
     const myVideo = document.createElement("video");

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import MyButton from "../../UI/button/MyButton";
 import io from "socket.io-client";
 import Peer from "peerjs";
@@ -17,7 +17,7 @@ const ScreenSharing = (props) => {
             })
             .then((stream) => {
                 setVideoScreen(stream);
-                console.log(stream);
+
                 screenConnect(
                     props.ROOM_ID,
                     stream,
@@ -33,6 +33,7 @@ const ScreenSharing = (props) => {
         socket.emit("disc", screenSocketId);
 
         videoScreen.getTracks().forEach((track) => track.stop());
+        setScreenActiveState(false);
     };
 
     const screenConnect = (ROOM_ID, videoStream, userName, orgName) => {
@@ -60,6 +61,7 @@ const ScreenSharing = (props) => {
 
         myPeer.on("call", async (call) => {
             // When we join someone's room we will receive a call from them
+
             call.answer(videoStream); // Stream them our video/audio
             call.on("stream", (userVideoStream) => {
                 // When we recieve their stream

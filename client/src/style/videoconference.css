@@ -16,23 +16,62 @@
     height: 100%;
 }
 .video-wrapper {
+    width: 35%;
+    flex-shrink: 0;
     background-color: rgb(26, 26, 29);
     margin: 5px;
     border-radius: 5px;
     padding: 0px;
     position: relative;
+    z-index: 8;
+    border: 3px #20222e solid;
 }
 .video-wrapper__user-info {
     padding: 0px;
     margin: 0px;
     position: absolute;
-    right: 0;
-    bottom: 0;
+    right: 5px;
+    bottom: 5px;
+    z-index: 9;
 }
 .video-wrapper__user-info > p {
     margin: 0px;
 
     padding: 0px;
-    text-shadow: 1px 1px 1px #fff;
+    text-shadow: -0 -1px 0 #ffffff, 0 -1px 0 #ffffff, -0 1px 0 #ffffff, 0 1px 0 #ffffff, -1px -0 0 #ffffff,
+        1px -0 0 #ffffff, -1px 0 0 #ffffff, 1px 0 0 #ffffff, -1px -1px 0 #ffffff, 1px -1px 0 #ffffff, -1px 1px 0 #ffffff,
+        1px 1px 0 #ffffff, -1px -1px 0 #ffffff, 1px -1px 0 #ffffff, -1px 1px 0 #ffffff, 1px 1px 0 #ffffff;
     font-weight: bold;
+}
+
+.btn-control {
+    z-index: 10;
+    text-align: center;
+    font-size: 14px;
+    padding: 5px;
+    height: 26px;
+    line-height: 14px;
+    background-color: #e8eaf6;
+}
+.btn-control:hover {
+    background-color: rgb(199, 35, 35);
+}
+.btn-control:active {
+    background-color: rgb(199, 35, 35);
+}
+.btn-control:focus {
+    background-color: #e8eaf6;
+}
+.btn-control__active {
+    background-color: rgb(199, 35, 35);
+}
+
+.btn-control__active:hover {
+    background-color: #e8eaf6;
+}
+.btn-control__active:active {
+    background-color: #e8eaf6;
+}
+.btn-control__active:focus {
+    background-color: rgb(199, 35, 35);
 }
