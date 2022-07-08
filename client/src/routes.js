@@ -9,12 +9,17 @@ import VideoPlayer from "./components/VideoPlayer";
 import TestPage from "./pages/TestPage";
 import VideoСonferencePage from "./pages/VideoСonferencePage";
 import TestDemon from "./pages/TestDemon";
+import AdminPage from "./pages/AdminPage";
+import NavigateControl from "./pages/admin/NavigateControl";
+import AddNewNavigateItem from "./pages/admin/navigate/AddNewNavigateItem";
+import UpdateNavigateItem from "./pages/admin/navigate/UpdateNavigateItem";
+import DeliteNavigateItem from "./pages/admin/navigate/DeliteNavigateItem";
 
 export const useRoutes = (isAuthenticated) => {
     if (isAuthenticated) {
         return (
             <Switch>
-                <Route path='/create' exact>
+                <Route path='/create'>
                     <CreatePage />
                 </Route>
                 <Route path='/detail/:id'>
@@ -27,18 +32,37 @@ export const useRoutes = (isAuthenticated) => {
                 <Route path='/videochat'>
                     <VideoСonferencePage />
                 </Route>
+                <Route path='/admin/navigate/add'>
+                    <AddNewNavigateItem />
+                </Route>
+                <Route path='/admin/navigate/update'>
+                    <UpdateNavigateItem />
+                </Route>
+                <Route path='/admin/navigate/delite'>
+                    <DeliteNavigateItem />
+                </Route>
+                <Route path='/admin/navigate'>
+                    <NavigateControl />
+                </Route>
+                <Route path='/admin'>
+                    <AdminPage />
+                </Route>
+
+                {/* Навигация */}
+
                 <Route path='/testpage'>
                     <TestPage />
                 </Route>
 
-                <Route path='/stream'>
+                {/* <Route path='/stream'>
                     <VideoPlayer />
-                </Route>
-                <Route path='/testdem'>
+                </Route> */}
+                {/* <Route path='/testdem'>
                     <TestDemon />
-                </Route>
-                <PagesRoutes />
-                <Redirect to='/createlink' />
+                </Route> */}
+
+                {/* <PagesRoutes /> */}
+                <Redirect to='/' />
             </Switch>
         );
     }
@@ -51,14 +75,12 @@ export const useRoutes = (isAuthenticated) => {
             <Route path='/authpage' exact>
                 <AuthPage />
             </Route>
-            <Route path='/stream'>
-                <VideoPlayer />
-            </Route>
+
             <Route path='/videochat'>
                 <VideoСonferencePage />
             </Route>
-            <PagesRoutes />
-            <Redirect to='/create' />
+            {/* <PagesRoutes /> */}
+            <Redirect to='/' />
         </Switch>
     );
 };

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import "../style/navbar.css";
@@ -7,12 +7,34 @@ import M from "materialize-css";
 export const Navbar = () => {
     const history = useHistory();
     const auth = useContext(AuthContext);
-
+    const [navArray, setNavArray] = useState(null);
+    let rrr = "bonjure";
+    const getPostNavArray = async () => {
+        try {
+            return await fetch("/api/navigate/getnavigate", {
+                method: "GET",
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const getNavArray = async () => {
+        try {
+            await getPostNavArray().then((res) => setNavArray(res));
+        } catch (error) {
+            console.log(error);
+        }
+    };
     const logoutHandler = (event) => {
         event.preventDefault();
         auth.logout();
         history.push("/");
     };
+    useEffect(() => {
+        if (navArray) {
+            console.log(navArray);
+        }
+    }, [navArray]);
     useEffect(() => {
         let dropdowns = document.querySelectorAll(".dropdown-trigger");
         let options = {
@@ -25,32 +47,32 @@ export const Navbar = () => {
         M.Dropdown.init(dropdowns, options);
     }, []);
     const navbarLinks = [
-        // {
-        //     _id: 1,
-        //     linkUrl: "links",
-        //     linkName: "Ссылки",
-        //     dropList: [],
-        // },
-        // {
-        //     _id: 2,
-        //     linkUrl: "stream2",
-        //     linkName: "дроп1",
-        //     dropList: [
-        //         { _id: 1, dropUrl: "stream1", dropLinkName: "Стрим1" },
-        //         { _id: 2, dropUrl: "stream2", dropLinkName: "Стрим2" },
-        //         { _id: 3, dropUrl: "stream3", dropLinkName: "Стрим3" },
-        //     ],
-        // },
-        // {
-        //     _id: 3,
-        //     linkUrl: "stream4",
-        //     linkName: "дроп2",
-        //     dropList: [
-        //         { _id: 1, dropUrl: "stream1", dropLinkName: "Стрим5" },
-        //         { _id: 2, dropUrl: "stream2", dropLinkName: "Стрим6" },
-        //         { _id: 3, dropUrl: "stream3", dropLinkName: "Стрим7" },
-        //     ],
-        // },
+        {
+            _id: 1,
+            linkUrl: "links",
+            linkName: "Ссылки",
+            dropList: [],
+        },
+        {
+            _id: 2,
+            linkUrl: "stream2",
+            linkName: "дроп1",
+            dropList: [
+                { _id: 1, dropUrl: "stream1", dropLinkName: "Стрим1" },
+                { _id: 2, dropUrl: "stream2", dropLinkName: "Стрим2" },
+                { _id: 3, dropUrl: "stream3", dropLinkName: "Стрим3" },
+            ],
+        },
+        {
+            _id: 3,
+            linkUrl: "stream4",
+            linkName: "дроп2",
+            dropList: [
+                { _id: 1, dropUrl: "stream1", dropLinkName: "Стрим5" },
+                { _id: 2, dropUrl: "stream2", dropLinkName: "Стрим6" },
+                { _id: 3, dropUrl: "stream3", dropLinkName: "Стрим7" },
+            ],
+        },
         {
             _id: 4,
             linkUrl: "videochat",
@@ -58,12 +80,6 @@ export const Navbar = () => {
             dropList: [],
         },
 
-        {
-            _id: 5,
-            linkUrl: "stream",
-            linkName: "Стрим",
-            dropList: [],
-        },
         {
             _id: 6,
             linkUrl: "createlink",
@@ -123,6 +139,9 @@ export const Navbar = () => {
                     {auth.isAuthenticated === true && (
                         <>
                             <li>
+                                <NavLink to='/admin'>Управнение</NavLink>
+                            </li>
+                            <li>
                                 <NavLink to='/' onClick={logoutHandler}>
                                     Выйти
                                 </NavLink>
@@ -134,6 +153,7 @@ export const Navbar = () => {
                             <NavLink to='/authpage'>Войти</NavLink>
                         </li>
                     )}
+                    <button onClick={getNavArray}>Получить</button>
                 </ul>
             </div>
         </nav>

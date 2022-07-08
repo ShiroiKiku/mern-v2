@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
-const { Schema, model, Types } = require("mongoose");
+const { Schema, model } = require("mongoose");
 const schema = new Schema({
-    linkUrl: { type: String, required: true },
-    linkName: { type: String, required: true },
-    dropList: [],
+    navItemUrl: { type: String },
+    navItemName: { type: String },
+    navItemDropItems: {},
+    navItemLvl: { type: Number },
 });
 
 module.exports = model("Nav", schema);

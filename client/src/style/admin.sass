@@ -1,0 +1,28 @@
+@import "color.sass"
+@import "block-shadow"
+.admin-panel
+    &__title
+        h2
+            color: $text-dark-color
+            text-align: center
+    &__control
+        @include box-shadow($block-border-color)
+        background-color: $block-color
+
+    &__menu
+        @include box-shadow($block-border-color)
+        margin: 10px 0
+        background-color: $block-color
+        h4
+            text-align: center
+        p
+            background-color: $text-background-color-input
+            font-size: 30px
+            padding: 10px 20px
+            border: 1px solid $text-background-color-input-border
+            color: $text-dark-color
+            &:hover
+                background-color: $text-background-color-input-border
+                @include box-shadow($block-border-color)
+.form-control
+    margin: 10px

@@ -23,6 +23,7 @@ router.get("/pageid", async (req, res) => {
     try {
         const pageId = req.params.linkUrl;
         const page = await Page.findOne({ linkUrl: pageId });
+
         res.json(page);
     } catch (e) {
         res.status(201).json({ message: "ссылка не показана" });
@@ -49,4 +50,5 @@ router.post("/pagedelite", async (req, res) => {
         res.status(201).json({ message: "Пользовател не создан" });
     }
 });
+
 module.exports = router;
