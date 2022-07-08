@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import addToDatabase from "../../../services/admin/addToDatabase";
 
 const AddNewNavigateItem = () => {
     const [form, setForm] = useState({
@@ -10,9 +11,11 @@ const AddNewNavigateItem = () => {
     const changeHandler = (event) => {
         setForm({ ...form, [event.target.name]: event.target.value });
     };
-    useEffect(() => {
-        console.log(form);
-    }, [form]);
+
+    const createItem = () => {
+        let addCheck = addToDatabase(form);
+        console.log(addCheck);
+    };
     return (
         <div className='row admin-panel'>
             <div className='col s12 admin-panel__title'>
@@ -69,6 +72,7 @@ const AddNewNavigateItem = () => {
                         <option value='coconut'>Coconut</option>
                         <option value='mango'>Mango</option>
                     </select> */}
+                    <button onClick={createItem}>Создать</button>
                 </form>
             </div>
         </div>

@@ -3,7 +3,7 @@ const Navigate = require("../models/Nav");
 const mongoose = require("mongoose");
 const router = Router();
 
-router.get("/getnavigate", async (req, res) => {
+router.get("/get", async (req, res) => {
     try {
         const navArray = await Navigate.find({ Navigate: 1 });
         console.log(navArray);
@@ -12,7 +12,7 @@ router.get("/getnavigate", async (req, res) => {
         res.status(500).json({ message: "ошибка создания навигации" });
     }
 });
-router.post("/addnavigate", async (req, res) => {
+router.post("/add", async (req, res) => {
     try {
         const { navItemUrl, navItemName, navItemDropItems, navItemLvl } =
             req.body;
