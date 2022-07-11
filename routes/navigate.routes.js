@@ -5,8 +5,8 @@ const router = Router();
 
 router.get("/get", async (req, res) => {
     try {
-        const navArray = await Navigate.find({ Navigate: 1 });
-        console.log(navArray);
+        const navArray = await Navigate.find({ navItemLvl: "1" });
+
         res.json(navArray);
     } catch (e) {
         res.status(500).json({ message: "ошибка создания навигации" });

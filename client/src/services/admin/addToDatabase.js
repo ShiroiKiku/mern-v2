@@ -1,6 +1,4 @@
-import React from "react";
-
-const addToDatabase = (form) => {
+const addToDatabase = (form, type) => {
     try {
         fetch("/api/navigate/add", {
             method: "POST",
