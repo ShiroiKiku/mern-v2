@@ -9,6 +9,7 @@ import "materialize-css";
 import Footer from "./components/Footer";
 import "../src/style/style.css";
 import "../src/style/index.sass";
+import findToDatabase from "./services/admin/findToDatabase";
 // import "bootstrap";
 
 function App() {
@@ -19,6 +20,51 @@ function App() {
     if (!ready) {
         return <Loader />;
     }
+
+    const navbarLinks = [
+        {
+            _id: 1,
+            navItemUrl: "links",
+            navItemName: "Ссылки",
+            navItemDropItems: [],
+        },
+        {
+            _id: 2,
+            navItemUrl: "stream2",
+            navItemName: "дроп1",
+            navItemDropItems: [
+                { dropItemLink: "stream1", dropItemName: "Стрим1" },
+            ],
+        },
+        {
+            _id: 3,
+            navItemUrl: "stream4",
+            navItemName: "дроп2",
+            navItemDropItems: [
+                { dropItemLink: "stream1", dropItemName: "Стрим5" },
+                { dropItemLink: "stream2", dropItemName: "Стрим6" },
+                { dropItemLink: "stream3", dropItemName: "Стрим7" },
+            ],
+        },
+        {
+            _id: 4,
+            navItemUrl: "videochat",
+            navItemName: "Видеоконференция",
+            navItemDropItems: [],
+        },
+
+        {
+            _id: 6,
+            navItemUrl: "createlink",
+            navItemName: "Создание страницы",
+            navItemDropItems: [],
+        },
+    ];
+    findToDatabase("navigate").then((res) => {
+        for (let key of res) {
+            navbarLinks.push(key);
+        }
+    });
 
     return (
         <AuthContext.Provider

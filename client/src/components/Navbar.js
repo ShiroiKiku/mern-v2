@@ -3,38 +3,63 @@ import { NavLink, useHistory } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import "../style/navbar.css";
 import M from "materialize-css";
+import findToDatabase from "../services/admin/findToDatabase";
 
 export const Navbar = () => {
     const history = useHistory();
     const auth = useContext(AuthContext);
-    const [navArray, setNavArray] = useState(null);
-    let rrr = "bonjure";
-    const getPostNavArray = async () => {
-        try {
-            return await fetch("/api/navigate/getnavigate", {
-                method: "GET",
-            });
-        } catch (error) {
-            console.log(error);
+
+    const navbarLinks = [
+        {
+            _id: 1,
+            navItemUrl: "links",
+            navItemName: "Ссылки",
+            navItemDropItems: [],
+        },
+        {
+            _id: 2,
+            navItemUrl: "stream2",
+            navItemName: "дроп1",
+            navItemDropItems: [
+                { dropItemLink: "stream1", dropItemName: "Стрим1" },
+            ],
+        },
+        {
+            _id: 3,
+            navItemUrl: "stream4",
+            navItemName: "дроп2",
+            navItemDropItems: [
+                { dropItemLink: "stream1", dropItemName: "Стрим5" },
+                { dropItemLink: "stream2", dropItemName: "Стрим6" },
+                { dropItemLink: "stream3", dropItemName: "Стрим7" },
+            ],
+        },
+        {
+            _id: 4,
+            navItemUrl: "videochat",
+            navItemName: "Видеоконференция",
+            navItemDropItems: [],
+        },
+
+        {
+            _id: 6,
+            navItemUrl: "createlink",
+            navItemName: "Создание страницы",
+            navItemDropItems: [],
+        },
+    ];
+    findToDatabase("navigate").then((res) => {
+        for (let key of res) {
+            navbarLinks.push(key);
         }
-    };
-    const getNavArray = async () => {
-        try {
-            await getPostNavArray().then((res) => setNavArray(res));
-        } catch (error) {
-            console.log(error);
-        }
-    };
+    });
+
     const logoutHandler = (event) => {
         event.preventDefault();
         auth.logout();
         history.push("/");
     };
-    useEffect(() => {
-        if (navArray) {
-            console.log(navArray);
-        }
-    }, [navArray]);
+
     useEffect(() => {
         let dropdowns = document.querySelectorAll(".dropdown-trigger");
         let options = {
@@ -46,47 +71,6 @@ export const Navbar = () => {
         };
         M.Dropdown.init(dropdowns, options);
     }, []);
-    const navbarLinks = [
-        {
-            _id: 1,
-            linkUrl: "links",
-            linkName: "Ссылки",
-            dropList: [],
-        },
-        {
-            _id: 2,
-            linkUrl: "stream2",
-            linkName: "дроп1",
-            dropList: [
-                { _id: 1, dropUrl: "stream1", dropLinkName: "Стрим1" },
-                { _id: 2, dropUrl: "stream2", dropLinkName: "Стрим2" },
-                { _id: 3, dropUrl: "stream3", dropLinkName: "Стрим3" },
-            ],
-        },
-        {
-            _id: 3,
-            linkUrl: "stream4",
-            linkName: "дроп2",
-            dropList: [
-                { _id: 1, dropUrl: "stream1", dropLinkName: "Стрим5" },
-                { _id: 2, dropUrl: "stream2", dropLinkName: "Стрим6" },
-                { _id: 3, dropUrl: "stream3", dropLinkName: "Стрим7" },
-            ],
-        },
-        {
-            _id: 4,
-            linkUrl: "videochat",
-            linkName: "Видеоконференция",
-            dropList: [],
-        },
-
-        {
-            _id: 6,
-            linkUrl: "createlink",
-            linkName: "Создание страницы",
-            dropList: [],
-        },
-    ];
 
     return (
         <nav className='blue-grey darken-2'>
@@ -94,39 +78,44 @@ export const Navbar = () => {
                 <span className='brand-logo'>Дипломное приложение</span>
                 <ul id='nav-mobile' className='right hide-on-med-and-down'>
                     {navbarLinks.map((navLink) => {
-                        if (navLink.dropList.length === 0) {
+                        if (navLink.navItemDropItems.length === 0) {
+                            // console.log(navLink);
                             return (
-                                <li key={navLink._id}>
-                                    <NavLink to={`/${navLink.linkUrl}`}>
-                                        {navLink.linkName}
+                                <li key={navLink.navItemUrl}>
+                                    <NavLink to={`${navLink.navItemUrl}`}>
+                                        {navLink.navItemName}
                                     </NavLink>
                                 </li>
                             );
                         } else {
-                            const nl = navLink.dropList;
+                            const nl = navLink.navItemDropItems;
+                            // console.log(navLink);
                             return (
-                                <li key={navLink._id}>
+                                <li key={navLink.navItemUrl}>
                                     <a
                                         id='FirstDropDown'
                                         className='dropdown-trigger'
-                                        data-target={navLink.linkUrl}
+                                        data-target={navLink.navItemUrl}
                                         onClick={(e) =>
                                             M.Dropdown.getInstance(e.target)
                                         }>
-                                        {navLink.linkName}
+                                        {navLink.navItemName}
                                         <i className='material-icons right'>
                                             arrow_drop_down
                                         </i>
                                     </a>
                                     <ul
-                                        id={navLink.linkUrl}
+                                        id={navLink.navItemUrl}
                                         className='dropdown-content'>
                                         {nl.map((dropArray) => {
                                             return (
-                                                <li key={dropArray.dropUrl}>
+                                                <li
+                                                    key={
+                                                        dropArray.dropItemLink
+                                                    }>
                                                     <NavLink
-                                                        to={`/${dropArray.dropUrl}`}>
-                                                        {dropArray.dropLinkName}
+                                                        to={`${dropArray.dropItemLink}`}>
+                                                        {dropArray.dropItemName}
                                                     </NavLink>
                                                 </li>
                                             );
@@ -153,7 +142,6 @@ export const Navbar = () => {
                             <NavLink to='/authpage'>Войти</NavLink>
                         </li>
                     )}
-                    <button onClick={getNavArray}>Получить</button>
                 </ul>
             </div>
         </nav>

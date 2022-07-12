@@ -1,6 +1,6 @@
 const addToDatabase = (form, type) => {
     try {
-        fetch("/api/navigate/add", {
+        fetch(`/api/${type}/add`, {
             method: "POST",
             body: JSON.stringify(form),
             headers: { "Content-Type": "application/json" },

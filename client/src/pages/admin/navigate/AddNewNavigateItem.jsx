@@ -11,18 +11,29 @@ const AddNewNavigateItem = () => {
         navItemLvl: "1",
     });
     const [findlvlOne, setFindlvlOne] = useState(null);
+    const [item, setItem] = useState(null);
+
     const changeHandler = (event) => {
         setForm({ ...form, [event.target.name]: event.target.value });
-        console.log(form);
     };
 
     const createItem = () => {
-        let addCheck = addToDatabase(form, "navigate");
-        console.log(addCheck);
+        addToDatabase(form, "navigate");
+
+        if (form.navItemLvl == 2) {
+            fetch(`/api/navigate/updatedroplist`, {
+                method: "POST",
+                body: JSON.stringify({
+                    dropUp: item,
+                    dropDown: { name: form.navItemName, link: form.navItemUrl },
+                }),
+                headers: { "Content-Type": "application/json" },
+            });
+        }
     };
     const queryFindLvlOne = async () => {
         try {
-            const find = await findToDatabase().then();
+            const find = await findToDatabase("navigate").then();
             setFindlvlOne(find);
         } catch (error) {
             console.log(error);
@@ -60,7 +71,7 @@ const AddNewNavigateItem = () => {
                     <p>
                         <label>
                             <input
-                                name='navItemDropLvl'
+                                name='navItemLvl'
                                 type='radio'
                                 defaultChecked
                                 value={1}
@@ -72,7 +83,7 @@ const AddNewNavigateItem = () => {
                     <p>
                         <label>
                             <input
-                                name='navItemDropLvl'
+                                name='navItemLvl'
                                 type='radio'
                                 value={2}
                                 onChange={changeHandler}
@@ -82,16 +93,25 @@ const AddNewNavigateItem = () => {
                         </label>
                     </p>
                     {findlvlOne && (
-                        <div>
+                        <select
+                            onClick={(event) => {
+                                setItem(event.target.value);
+                            }}
+                            className='browser-default'>
+                            <option defaultValue='' disabled>
+                                Choose your option
+                            </option>
                             {findlvlOne.map((oneItem) => {
                                 return (
-                                    <div key={oneItem.navItemUrl}>
-                                        <p>{oneItem.navItemUrl}</p>
-                                        <p>{oneItem.navItemName}</p>
-                                    </div>
+                                    <option
+                                        value={oneItem.navItemUrl}
+                                        key={oneItem.navItemUrl}
+                                        name={oneItem.navItemUrl}>
+                                        {oneItem.navItemName}
+                                    </option>
                                 );
                             })}
-                        </div>
+                        </select>
                     )}
                     <button onClick={createItem}>Создать</button>
                 </form>
