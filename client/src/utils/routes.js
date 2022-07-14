@@ -1,0 +1,12 @@
+export const ADMIN = "/admin";
+export const ADMIN_NAVIGATE = "/admin/navigate";
+export const VIDEO_CHAT = "/videochat";
+export const ADMIN_NAVIGATE_ADD = "/admin/navigate/add";
+export const ADMIN_NAVIGATE_UP = "/admin/navigate/update";
+export const ADMIN_NAVIGATE_DEL = "/admin/navigate/delite";
+export const ADMIN_NEWS = "/admin/news";
+export const ADMIN_NEWS_ADD = "/admin/news/add";
+export const ADMIN_NEWS_UP = "/admin/news/update";
+export const ADMIN_NEWS_DEL = "/admin/news/delite";
+export const AUTH = "/authpage";
+export const CUSTOM_PAGE = "/:id";

@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "../style/admin.sass";
+import { ADMIN_NEWS_ADD } from "../utils/routes";
 
 const AdminPage = () => {
     return (
@@ -11,7 +12,7 @@ const AdminPage = () => {
 
             <div className='col s12 admin-panel__menu'>
                 <h4>Добавление новостей</h4>
-                <Link to='/create'>
+                <Link to={ADMIN_NEWS_ADD}>
                     <p>Добавление новости</p>
                 </Link>
 

@@ -22,6 +22,8 @@ app.use("/api/videochat", require("./routes/videochat.routes"));
 app.use("/api/vch", require("./routes/vch.routes"));
 app.use("/api/videochatdata", require("./routes/videouserdata.routes"));
 app.use("/api/navigate", require("./routes/navigate.routes"));
+app.use("/api/imageupload", require("./routes/imageUpload.routes"));
+
 if (process.env.NODE_ENV === "production") {
     app.use("/", express.static(path.join(__dirname, "client", "build")));
 
