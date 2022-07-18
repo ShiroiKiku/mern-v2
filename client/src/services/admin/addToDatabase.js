@@ -1,6 +1,6 @@
-const addToDatabase = (form, type) => {
+const addToDatabase = async (form, type) => {
     try {
-        fetch(`/api/${type}/add`, {
+        await fetch(`/api/${type}/add`, {
             method: "POST",
             body: JSON.stringify(form),
             headers: { "Content-Type": "application/json" },

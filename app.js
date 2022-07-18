@@ -23,6 +23,7 @@ app.use("/api/vch", require("./routes/vch.routes"));
 app.use("/api/videochatdata", require("./routes/videouserdata.routes"));
 app.use("/api/navigate", require("./routes/navigate.routes"));
 app.use("/api/imageupload", require("./routes/imageUpload.routes"));
+app.use("/api/news", require("./routes/news.routes"));
 
 if (process.env.NODE_ENV === "production") {
     app.use("/", express.static(path.join(__dirname, "client", "build")));
